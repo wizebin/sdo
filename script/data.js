@@ -8,6 +8,14 @@ function list(type, limit, page) {
   });
 }
 
+function count(type) {
+  return new Promise(function(resolve, reject){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'count', type })).then(function(data){
+      resolve(JSON.parse(data));
+    });
+  });
+}
+
 function createOrUpdate(data) {
   return new Promise(function(resolve, reject){
     httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'upsert', data })).then(function(data){

@@ -360,10 +360,11 @@ function getFilterFromDataMYPGSQL($db, $unescapedcol, $word, $unescapedval, $ism
   return null;
 }
 
-function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array()){
+function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
   $filterStatement = "";
   $sortStatement = "";
   $limitStatement = "";
+  $selector = "*";
 
   $filterFinalList = array();
   $sortFinalList = array();
@@ -412,13 +413,18 @@ function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     $limitStatement = "LIMIT ".round($pagesize)." OFFSET ". round($page*$pagesize);
   }
 
-  $qrey = "SELECT * FROM $table $filterStatement $sortStatement $limitStatement;";
+  if ($countOnly) {
+    $selector = 'COUNT(*) as count';
+  }
+
+  $qrey = "SELECT $selector FROM $table $filterStatement $sortStatement $limitStatement;";
   return executeMYSQL($db, $qrey);
 }
-function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array()){
+function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
   $filterStatement = "";
   $sortStatement = "";
   $limitStatement = "";
+  $selector = "*";
 
   $filterFinalList = array();
   $sortFinalList = array();
@@ -467,10 +473,14 @@ function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     $limitStatement = "LIMIT ".round($pagesize)." OFFSET ". round($page*$pagesize);
   }
 
-  $qrey = "SELECT * FROM $table $filterStatement $sortStatement $limitStatement;";
+  if ($countOnly) {
+    $selector = 'COUNT(*) as count';
+  }
+
+  $qrey = "SELECT $selector FROM $table $filterStatement $sortStatement $limitStatement;";
   return executePGSQL($db, $qrey);
 }
-function listWithParamsMSSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array()){
+function listWithParamsMSSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
 
 }
 
@@ -643,17 +653,17 @@ function listIndexedSQL($SQLType, $dbHandle, $table){
       return -1;
   }
 }
-function listWithParamsSQL($SQLType, $db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array()){
+function listWithParamsSQL($SQLType, $db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
   switch($SQLType){
     case 'mysql':
-      return listWithParamsMYSQL($db, $table, $page, $pagesize, $filterlist, $sortlist);
+      return listWithParamsMYSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
     break;
     case 'mssql':
-      return listWithParamsMSSQL($db, $table, $page, $pagesize, $filterlist, $sortlist);
+      return listWithParamsMSSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
     break;
     case 'pgsql':
     case 'postgres':
-      return listWithParamsPGSQL($db, $table, $page, $pagesize, $filterlist, $sortlist);
+      return listWithParamsPGSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
     break;
     default:
       return -1;
@@ -702,9 +712,9 @@ function listIndexedConf($db, $table){
   global $dbtype;
   return listIndexedSQL($dbtype, $db, $table);
 }
-function listWithParamsConf($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array()){
+function listWithParamsConf($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
   global $dbtype;
-  return listWithParamsSQL($dbtype, $db, $table, $page, $pagesize, $filterlist, $sortlist);
+  return listWithParamsSQL($dbtype, $db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
 }
 
 function safeFilename($pageName){

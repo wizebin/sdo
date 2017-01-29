@@ -76,7 +76,18 @@
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($db, $this->type);
 
-        $results = listWithParamsConf($db, $table, $page, $pagesize, $filters, $sortby);
+        $results = listWithParamsConf($db, $table, null, null, $filters, $sortby);
+
+        $this->results=$results;
+        $this->success=is_array($this->results);
+      } else if ($this->verb == 'count') {
+        $filters = isset($this->filters)?json_decode($this->filters,true):array(); // ['id'=>123]
+        $sortby = isset($this->sortby)?json_decode($this->sortby,true):array(); //['id'=>'DESC']
+        $page = isset($this->page)?$this->page:0;
+        $pagesize = isset($this->limit)?$this->limit:0;
+        $table = escapeIdentifierConf($db, $this->type);
+
+        $results = listWithParamsConf($db, $table, $page, $pagesize, $filters, $sortby, true);
 
         $this->results=$results;
         $this->success=is_array($this->results);
