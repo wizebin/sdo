@@ -16,6 +16,7 @@ JobList.prototype.getJobs = function(limit, page) {
         return spawn('div', null, { className: 'jobLineItem', style: { height: '40px', marginBottom: '5px' }, onclick: function(){that.showJob(passData);}}, [
           spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, passData.customer.name),
           spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, passData.description),
+          spawn('span', null, { style: { flex: '1', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'left' } }, passData.status),
           spawn('span', null, { style: { flex: '1', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'right' } }, passData.id),
         ]);
       }) || [];

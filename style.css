@@ -208,7 +208,6 @@ button:active{
   bottom: 0px;
   top: 0px;
 }
-
 .listViewNavHeader {
   padding: 10px;
   background-color: #eee;
@@ -217,7 +216,6 @@ button:active{
   margin-bottom: 10px;
   align-items: center;
 }
-
 .jobLineItem , .apptLineItem {
   display: flex;
   align-items: center;
@@ -227,12 +225,10 @@ button:active{
   border-bottom: 1px solid #555;
   margin-bottom: 10px;
 }
-
 .jobLineItem:hover, .apptLineItem:hover {
   background-color: #aaa;
   cursor: pointer;
 }
-
 .jobLineItem:last-child, .apptLineItem:last-child {
   border-bottom: none;
   margin-bottom: 0px;

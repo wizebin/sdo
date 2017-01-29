@@ -5,15 +5,11 @@ var ScheduleView = function(parent, props) {
 
   this.scheduleButton = spawn('button', this.view, { onclick: this.onSchedule, style: { marginBottom: '10px' } }, 'Schedule');
 
-  this.statusDropdown = spawn('select', this.view, { style: { marginBottom: '10px' } }, [
-    spawn('option', null, {}, 'scheduled'),
-    spawn('option', null, {}, 'active'),
-    spawn('option', null, {}, 'waiting for parts'),
-    spawn('option', null, {}, 'paused'),
-    spawn('option', null, {}, 'complete'),
-    spawn('option', null, {}, 'recorded to sls'),
-    spawn('option', null, {}, 'deleted'),
-  ]);
+  this.statusDropdown = spawn('select', this.view, { style: { marginBottom: '10px' } },
+    JobStatStrings.map(function(stat){
+      return spawn('option', null, {}, stat);
+    })
+  );
 
   spawn('span', this.view, { style: { alignSelf: 'center' } }, 'Appointments');
 

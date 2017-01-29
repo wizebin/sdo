@@ -31,6 +31,24 @@ function translateApptFromRW(data) {
 // Dummy
 // organizationID
 
+var JobStatStrings = [
+ 'Working to Schedule',
+ 'Currently Scheduled',
+ 'Dispatched to Tech',
+ 'Tech Reported',
+ 'Incomplete',
+ 'Waiting for Parts',
+ 'Pending Authorization',
+ 'Other',
+ 'Completed',
+ 'Recorded to SlsJrnl',
+ 'Marked for Deletion'];
+
+function stringStatus(statusNumber) {
+  var statusIndex = Number(statusNumber);
+  return JobStatStrings[statusIndex];
+}
+
 function translateJobFromRW(data) {
   return {
     customer: {
@@ -57,10 +75,11 @@ function translateJobFromRW(data) {
       phoneLabel3: data.LTelSffx3,
       email: data.LctnEmail,
     },
-    schedule: { statusDropdown: data.Status},
+    schedule: { statusDropdown: stringStatus(data.Status) },
     note: { note: data.History },
     id: data.Inv,
     description: data.Dscrptn,
+    status: stringStatus(data.Status),
   };
 }
 
