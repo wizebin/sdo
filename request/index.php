@@ -68,7 +68,7 @@
         $results = executeConf($db, $qrey);
 
         $this->results=$results;
-        $this->success=true;
+        $this->success=is_array($this->results);
       } else if ($this->verb == 'list') {
         $filters = isset($this->filters)?json_decode($this->filters,true):array(); // ['id'=>123]
         $sortby = isset($this->sortby)?json_decode($this->sortby,true):array(); //['id'=>'DESC']
@@ -79,7 +79,7 @@
         $results = listWithParamsConf($db, $table, $page, $pagesize, $filters, $sortby);
 
         $this->results=$results;
-        $this->success=true;
+        $this->success=is_array($this->results);
       } else if ($this->verb == 'update') {
         $table = escapeIdentifierConf($db, $this->type);
         $idlabel = escapeIdentifierConf($db, $this->idlabel);
@@ -160,17 +160,17 @@
         $results = describeTableConf($db, $table);
         $this->results=$results;
         $this->affected=$lastaffected;
-        $this->success=true;
+        $this->success=is_array($this->results);;
       } else if ($this->verb == 'tables') {
         $database = isset($this->database)?escapeIdentifierConf($db, $this->database):null;
         $results = listTablesConf($db, $database);
         $this->results=$results;
-        $this->success=true;
+        $this->success=is_array($this->results);;
       } else if ($this->verb == 'indexes') {
         $table = escapeIdentifierConf($db, $this->type);
         $results = listIndexedConf($db, $table);
         $this->results=$results;
-        $this->success=true;
+        $this->success=is_array($this->results);;
       } else if ($this->verb == 'arbitrary') {
         if ($username==$masterUsername){
           $qrey = $this->query;

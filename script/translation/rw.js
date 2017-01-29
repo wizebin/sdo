@@ -2,7 +2,9 @@ function translateApptFromRW(data) {
   return {
     id: data.SdmID,
     jobID: data.Inv,
-    name: data.name,
+    name: data.Nm,
+    phone: data.Tel,
+    city: data.City,
     time: data.DtTm,
     tech: data.AssndTch,
   };

@@ -3,7 +3,7 @@ var JobList = function(parent, props) {
   mixinAutoState(that);
   this.view = spawn('div', parent, { className: 'jobListView' });
 
-  this.list = new ListView(this.view, { getDataCallback: this.getJobs });
+  this.list = new ListView(this.view, { getDataCallback: this.getJobs, limit: 100 });
 }
 
 JobList.prototype.getJobs = function(limit, page) {
