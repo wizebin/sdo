@@ -2,7 +2,7 @@
 
 function list(type, limit, page) {
   return new Promise(function(resolve, reject){
-    httpVERB('http://nonsoftware.us/sdo/request/', 'POST', JSON.stringify({verb: 'list', type, limit, page})).then(function(data){
+    httpVERB('http://nonsoftware.us/sdo/request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page })).then(function(data){
       resolve(JSON.parse(data));
     });
   });
@@ -10,15 +10,15 @@ function list(type, limit, page) {
 
 function createOrUpdate(data) {
   return new Promise(function(resolve, reject){
-    httpVERB('http://nonsoftware.us/sdo/request/', 'POST', JSON.stringify({verb: 'upsert', data})).then(function(data){
+    httpVERB('http://nonsoftware.us/sdo/request/', 'POST', JSON.stringify({ verb: 'upsert', data })).then(function(data){
       resolve(JSON.parse(data));
     });
   });
 }
 
-function get(type, id) {
+function get(type, id, idlabel) {
   return new Promise(function(resolve, reject){
-    httpVERB('http://nonsoftware.us/sdo/request/', 'POST', JSON.stringify({verb: 'list', type, limit, page})).then(function(data){
+    httpVERB('http://nonsoftware.us/sdo/request/', 'POST', JSON.stringify({ verb: 'get', type, id, idlabel })).then(function(data){
       resolve(JSON.parse(data));
     });
   });

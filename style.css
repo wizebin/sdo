@@ -56,6 +56,12 @@ button:active{
   display: flex;
   flex-direction: column;
 }
+.sideNav>button{
+  margin-bottom: 10px;
+}
+.sideNav>button:last-child{
+  margin-bottom: 0px;
+}
 .navButton {
   width: 100%;
   padding: 10px;
@@ -203,7 +209,16 @@ button:active{
   top: 0px;
 }
 
-.jobLineItem {
+.listViewNavHeader {
+  padding: 10px;
+  background-color: #eee;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.jobLineItem , .apptLineItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -213,12 +228,12 @@ button:active{
   margin-bottom: 10px;
 }
 
-.jobLineItem:hover{
+.jobLineItem:hover, .apptLineItem:hover {
   background-color: #aaa;
   cursor: pointer;
 }
 
-.jobLineItem:last-child {
+.jobLineItem:last-child, .apptLineItem:last-child {
   border-bottom: none;
   margin-bottom: 0px;
 }

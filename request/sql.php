@@ -17,7 +17,7 @@ function makepgstring($server, $username, $password, $database, $port){
     if ($username!="") $connectionstring .= "user=" . $username . " ";
     if ($password!="") $connectionstring .= "password=" . $password . " ";
     if ($database!="") $connectionstring .="dbname=" . $database . " ";
-    if ($port!=null) $connectionstring .="port=" . $port . " ";
+    if ($port!==null) $connectionstring .="port=" . $port . " ";
   $connectionstring .= "connect_timeout=5";
   return $connectionstring;
 }
@@ -91,7 +91,7 @@ function executePGSQL($db, $query){
   //$lastid = pg_last_oid($result);
   //if (pg_num_rows($result)==null && count($ret)==0){
     //not a select, return a bool
-    //$ret=($result!=null);
+    //$ret=($result!==null);
   //}
   pg_free_result($result);
   return $ret;
@@ -274,13 +274,13 @@ function escapeIdentifierMSSQL($dbHandle, $data){
 
 function listTablesMYSQL($db, $database){
   $catalog='';
-  if ($database!=null)
+  if ($database!==null)
     $catalog= " IN $database";
   return executeMYSQL($db, "SHOW TABLES$catalog;");
 }
 function listTablesPGSQL($db, $database){
   $catalog='';
-  if ($database!=null)
+  if ($database!==null)
     $catalog=" AND table_catalog = '$database'";
   return executePGSQL($db, "select * from information_schema.tables where table_schema = 'public'$catalog;");
 }
@@ -408,7 +408,7 @@ function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     $sortStatement = "ORDER BY " . implode(', ',$sortFinalList);
   }
 
-  if ($page!=null && $pagesize !=null && is_numeric($page) && is_numeric($pagesize)){
+  if ($page!==null && $pagesize !==null && is_numeric($page) && is_numeric($pagesize)){
     $limitStatement = "LIMIT ".round($pagesize)." OFFSET ". round($page*$pagesize);
   }
 
@@ -463,7 +463,7 @@ function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     $sortStatement = "ORDER BY " . implode(', ',$sortFinalList);
   }
 
-  if ($page!=null && $pagesize !=null && is_numeric($page) && is_numeric($pagesize)){
+  if ($page!==null && $pagesize !==null && is_numeric($page) && is_numeric($pagesize)){
     $limitStatement = "LIMIT ".round($pagesize)." OFFSET ". round($page*$pagesize);
   }
 

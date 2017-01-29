@@ -1,4 +1,37 @@
-function translateJobFromRW(data){
+function translateApptFromRW(data) {
+  return {
+    id: data.SdmID,
+    jobID: data.Inv,
+    name: data.name,
+    time: data.DtTm,
+    tech: data.AssndTch,
+  };
+}
+
+// Inv
+// Nm
+// Tel
+// City
+// DtTm
+// AssndTch
+// DefOrTent
+// GrdPg
+// GrdLttr
+// GrdNmbr
+// Chckd
+// Zone
+// Dept
+// JbCnt
+// IsTechLate
+// NeedsUploaded
+// SdmID
+// GrdRefSspct
+// ShpJb
+// Fake
+// Dummy
+// organizationID
+
+function translateJobFromRW(data) {
   return {
     customer: {
       name: data.CstmrNm,
