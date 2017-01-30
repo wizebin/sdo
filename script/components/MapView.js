@@ -21,15 +21,18 @@ var MapView = function(parent, props) {
 
 MapView.prototype.loadMap = function() {
   var that = this;
-  this.map = new google.maps.Map(this.mapWrapper, {
-    center: new google.maps.LatLng(40, -100),
-    zoom: 4,
-    mapTypeId: 'roadmap',
-    mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
-  });
-  google.maps.event.addListenerOnce(this.map, 'idle', function() {
-    google.maps.event.trigger(that.map, 'resize');
-  });
+  if (!this.map) {
+    this.map = new google.maps.Map(this.mapWrapper, {
+      center: new google.maps.LatLng(40, -100),
+      zoom: 4,
+      mapTypeId: 'roadmap',
+      mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
+    });
+    google.maps.event.addListenerOnce(this.map, 'idle', function() {
+      google.maps.event.trigger(that.map, 'resize');
+    });
+  }
+  return this.map;
 }
 
 // MapView.prototype.getJobs = function(limit, page) {

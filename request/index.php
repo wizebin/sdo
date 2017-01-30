@@ -76,7 +76,7 @@
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($db, $this->type);
 
-        $results = listWithParamsConf($db, $table, null, null, $filters, $sortby);
+        $results = listWithParamsConf($db, $table, $page, $pagesize, $filters, $sortby);
 
         $this->results=$results;
         $this->success=is_array($this->results);
@@ -87,7 +87,7 @@
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($db, $this->type);
 
-        $results = listWithParamsConf($db, $table, $page, $pagesize, $filters, $sortby, true);
+        $results = listWithParamsConf($db, $table, null, null, $filters, $sortby, true);
 
         $this->results=$results;
         $this->success=is_array($this->results);

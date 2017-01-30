@@ -381,7 +381,7 @@ function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     }
   }
   if (count($filterFinalList)>0){
-    $filterStatement = 'WHERE ' . implode(' AND ',$filterFinalList);
+    $filterStatement = ' WHERE ' . implode(' AND ',$filterFinalList);
   }
 
   if (is_array($sortlist) && count($sortlist) > 0){
@@ -406,18 +406,18 @@ function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
   }
 
   if (count($sortFinalList)>0){//MAY NEED TO DO INNER QUERY IF LIMIT IS ALSO INCLUDED
-    $sortStatement = "ORDER BY " . implode(', ',$sortFinalList);
+    $sortStatement = " ORDER BY " . implode(', ',$sortFinalList);
   }
 
-  if ($page!==null && $pagesize !==null && is_numeric($page) && is_numeric($pagesize)){
-    $limitStatement = "LIMIT ".round($pagesize)." OFFSET ". round($page*$pagesize);
+  if ($page!==null && $pagesize !==null){
+    $limitStatement = " LIMIT ".round($pagesize)." OFFSET ". round($page*$pagesize);
   }
 
   if ($countOnly) {
     $selector = 'COUNT(*) as count';
   }
 
-  $qrey = "SELECT $selector FROM $table $filterStatement $sortStatement $limitStatement;";
+  $qrey = "SELECT $selector FROM $table" . $filterStatement . $sortStatement . $limitStatement . ';';
   return executeMYSQL($db, $qrey);
 }
 function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
