@@ -1,8 +1,8 @@
 /// crud create update delete
 
-function list(type, limit, page) {
+function list(type, limit, page, links) {
   return new Promise(function(resolve, reject){
-    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page })).then(function(data){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page, links })).then(function(data){
       resolve(JSON.parse(data));
     });
   });
@@ -27,6 +27,14 @@ function createOrUpdate(data) {
 function get(type, id, idlabel) {
   return new Promise(function(resolve, reject){
     httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'get', type, id, idlabel })).then(function(data){
+      resolve(JSON.parse(data));
+    });
+  });
+}
+
+function getPage(page, username, password) {
+  return new Promise(function(resolve, reject){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'getpage', username, password, page })).then(function(data){
       resolve(JSON.parse(data));
     });
   });

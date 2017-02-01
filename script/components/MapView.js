@@ -11,7 +11,6 @@ var MapView = function(parent, props) {
     script.onload = function () {
       that.loadMap();
     };
-
     document.head.appendChild(script);
   }
   else{

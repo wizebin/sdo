@@ -47,6 +47,14 @@ function b64DecodeUnicode(str) {
     }).join(''));
 }
 
+function addButtonCallback(element, callback, keycode = 13) {
+  element.addEventListener("keyup", function(event) {
+    if (event.keyCode == 13) {
+      callback&&callback(event, element);
+    }
+  });
+}
+
 function spawn(element, parent, props, children) {
   var el = document.createElement(element);
   if (props!=undefined) {

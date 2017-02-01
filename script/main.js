@@ -14,13 +14,7 @@ var App = function(parent) {
     spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
   ]);
 
-  this.leftView.addEventListener("transitionend", function(event) {
-    if (event.propertyName === 'max-width') {
-      if (that.leftView.style.maxWidth === '0px') {
-        // that.leftView.style.display = 'none';
-      }
-    }
-  });
+  this.onOpenPage();
 }
 
 App.prototype.showComponent = function(component) {
@@ -36,6 +30,8 @@ App.prototype.toggleNav = function() {
   }
 }
 
-var app = new App(document.getElementById('main'));
+App.prototype.onOpenPage = function() {
+  this.showComponent(new JobList(this.view, { onLogin: this.onLogin }));
+}
 
-app.showComponent(new JobList());
+var app = new App(document.getElementById('main'));

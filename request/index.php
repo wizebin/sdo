@@ -70,13 +70,44 @@
         $this->results=$results;
         $this->success=is_array($this->results);
       } else if ($this->verb == 'list') {
-        $filters = isset($this->filters)?json_decode($this->filters,true):array(); // ['id'=>123]
-        $sortby = isset($this->sortby)?json_decode($this->sortby,true):array(); //['id'=>'DESC']
+        $filters = isset($this->filters)?$this->filters:array(); // ['id'=>123]
+        $sortby = isset($this->sortby)?$this->sortby:array(); //['id'=>'DESC']
+        $links = isset($this->links)?$this->links:array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($db, $this->type);
 
         $results = listWithParamsConf($db, $table, $page, $pagesize, $filters, $sortby);
+
+        if (count($links) > 0) {
+          foreach($links as $link) {
+            $childTable = $link['table'];
+            $tableColumn = $link['tableColumn'];
+            $parentColumn = $link['parentColumn'];
+
+            $idtoindex = array();
+            $resultIds = array();
+
+            foreach($results as $key => $row) {
+              array_push($resultIds, escapeConf($db, $row[$parentColumn]));
+              $idtoindex[$row[$parentColumn]]=$key;
+            }
+            $stringIds = implode(', ',$resultIds);
+
+            $iqrey = "SELECT * FROM $childTable WHERE $tableColumn in ($stringIds)";
+
+            $ires = executeConf($db, $iqrey);
+
+            if (count($ires) > 0) {
+              foreach($ires as $irow) {
+                if (!isset($results[$idtoindex[$irow[$tableColumn]]][$childTable])) {
+                  $results[$idtoindex[$irow[$tableColumn]]][$childTable] = array();
+                }
+                $results[$idtoindex[$irow[$tableColumn]]][$childTable]=$irow;
+              }
+            }
+          }
+        }
 
         $this->results=$results;
         $this->success=is_array($this->results);
@@ -189,6 +220,21 @@
           $this->results=$results;
           $this->affected=$lastaffected;
         }
+      } else if ($this->verb == 'getpage') {
+        if (preg_match('/^([\w\d_]+\.?([\w\d_]+)?)$/', $this->page)){
+          $page = 'pages/'.$this->page;
+          if (file_exists($page)){
+            ob_start();
+            include($page);
+            $output = ob_get_clean();
+            $this->results=$output;
+            $this->success = true;
+          } else {
+            $this->err = 'unknown page';
+          }
+        } else {
+          $this->err = 'does not match acceptable page pattern';
+        }
       } else {
         $this->err = 'unknown verb';
       }
@@ -209,6 +255,8 @@
         $this->idlabel = $encoded['idlabel'];
       if (isset($encoded['limit']))
         $this->limit = $encoded['limit'];
+      if (isset($encoded['links']))
+        $this->links = $encoded['links'];
       if (isset($encoded['sortby']))
         $this->sortby = $encoded['sortby'];
       if (isset($encoded['filters']))
