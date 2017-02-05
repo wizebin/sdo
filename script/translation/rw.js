@@ -7,6 +7,7 @@ function translateApptFromRW(data) {
     city: data.City,
     time: data.DtTm,
     tech: data.AssndTch,
+    original: data,
   };
 }
 
@@ -82,6 +83,7 @@ function translateJobFromRW(data) {
     id: data.Inv,
     description: data.Dscrptn,
     status: stringStatus(data.Status),
+    original: data,
   };
 }
 

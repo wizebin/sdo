@@ -40,7 +40,7 @@
     public $idlabel = '';
     public $limit = 100;
     public $sortby = '';
-    public $filters = '';
+    public $filters = array();
     public $page = 0;
     public $database = '';
     public $query = '';
@@ -92,6 +92,22 @@
       $results = executeConf($this->db, $qrey);
     }
 
+    public function updateRow($table, $idlabel, $id, $data) {
+      $sets = "";
+
+      if (count($data)>0){
+        $sets = " SET ";
+        $setlist = array();
+        foreach($sortby as $key => $val){
+          array_push($setlist,escapeIdentifierConf($this->db,$key) . " = " . escapeConf($this->db,$val));
+        }
+        $sets .= implode(", ",$sortedlist);
+      }
+
+      $qrey = "UPDATE $table $sets WHERE $idlabel = $id";
+      return executeConf($this->db, $qrey);
+    }
+
     public function authenticate() {
       global $credtable, $creduser, $credpass, $credorg, $credid, $credseclevel;
       if (isset($credtable) && isset($creduser) && isset($credpass) && isset($credorg) && isset($credid)){
@@ -131,6 +147,7 @@
         $id = escapeConf($this->db, $this->id);
 
         $qrey = "SELECT * FROM $table WHERE $idlabel = $id";
+        if (isset($this->auth) && isset($this->auth['org'])) $qrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
         $results = executeConf($this->db, $qrey);
 
         $this->results=$results;
@@ -142,6 +159,8 @@
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
+
+        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => '=', 'obj' => $this->auth['org']));
 
         $results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby);
 
@@ -161,6 +180,7 @@
             $stringIds = implode(', ',$resultIds);
 
             $iqrey = "SELECT * FROM $childTable WHERE $tableColumn in ($stringIds)";
+            if (isset($this->auth) && isset($this->auth['org'])) $iqrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
 
             $ires = executeConf($this->db, $iqrey);
 
@@ -183,6 +203,7 @@
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
+        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => '=', 'obj' => $this->auth['org']));
 
         $results = listWithParamsConf($this->db, $table, null, null, $filters, $sortby, true);
 
@@ -195,22 +216,8 @@
         $id = escapeConf($this->db, $this->id);
 
         $data = json_decode($this->data,true);
-
-        $sets = "";
-
-        if (count($data)>0){
-          $sets = " SET ";
-          $setlist = array();
-          foreach($sortby as $key => $val){
-            array_push($setlist,escapeIdentifierConf($this->db,$key) . " = " . escapeConf($this->db,$val));
-          }
-          $sets .= implode(", ",$sortedlist);
-        }
-
-        $qrey = "UPDATE $table $sets WHERE $idlabel = $id";
-        $results = executeConf($this->db, $qrey);
-
-        $this->results=$results;
+        if (isset($this->auth) && isset($this->auth['org'])) $data['organizationID'] = $this->auth['org'];
+        $this->results=$this->updateRow($table, $idlabel, $id, $data);
         $this->affected=$lastaffected;
         $this->success=true;
       } else if ($this->verb == 'create') {
@@ -218,6 +225,7 @@
         $table = escapeIdentifierConf($this->db, $this->type);
 
         $data = json_decode($this->data,true);
+        if (isset($this->auth) && isset($this->auth['org'])) $data['organizationID']=$this->auth['org'];
 
         $results = $this->insertRow($table, $data);
 
@@ -238,7 +246,9 @@
           $idlabel = escapeIdentifierConf($this->db, $this->idlabel);
           $id = escapeConf($this->db, $this->id);
 
-          $qrey = "DELETE * FROM $table WHERE $idlabel = $id LIMIT 1";
+          $qrey = "DELETE * FROM $table WHERE $idlabel = $id";
+          if (isset($this->auth) && isset($this->auth['org'])) $qrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
+          $qrey .= ' LIMIT 1';
           $results = executeConf($this->db, $qrey);
 
           $this->results=$results;
@@ -315,12 +325,26 @@
         }
       } else if ($this->verb == 'changes'){
         $data = json_decode($this->data, true);
+        $idlabel = $this->idlabel;
         $table = escapeIdentifierConf($this->db, $this->type);
         $this->results = array();
         $adds = $data["add"];
         foreach($adds as $toadd) {
+          if (isset($this->auth) && isset($this->auth['org'])) $toadd['organizationID']=$this->auth['org'];
           array_push($this->results,$this->insertRow($table, $toadd));
         }
+        $updates = $data["update"];
+        foreach($updates as $toupdate) {
+          $tochange = $toupdate["data"];
+          if (isset($this->auth) && isset($this->auth['org'])) $tochange['organizationID']=$this->auth['org'];
+          array_push($this->results,$this->updateRow($table, $idlabel, $tochange[$idlabel], $tochange));
+        }
+        // $deletes = $data["delete"];
+        // foreach($deletes as $todelete) {
+        //   if (isset($this->auth) && isset($this->auth['org'])) $todelete['organizationID']=$this->auth['org'];
+        //   array_push($this->results,$this->deleteRow($table, $todelete));
+        // }
+
       } else if ($this->verb == 'getpage') {
         if (preg_match('/^([\w\d_]+\.?([\w\d_]+)?)$/', $this->page)){
           $page = 'pages/'.$this->page;
