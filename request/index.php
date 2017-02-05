@@ -98,10 +98,10 @@
       if (count($data)>0){
         $sets = " SET ";
         $setlist = array();
-        foreach($sortby as $key => $val){
-          array_push($setlist,escapeIdentifierConf($this->db,$key) . " = " . escapeConf($this->db,$val));
+        foreach($data as $key => $val){
+          array_push($setlist, escapeIdentifierConf($this->db,$key) . " = " . escapeConf($this->db,$val));
         }
-        $sets .= implode(", ",$sortedlist);
+        $sets .= implode(", ",$setlist);
       }
 
       $qrey = "UPDATE $table $sets WHERE $idlabel = $id";
@@ -328,16 +328,16 @@
         $idlabel = $this->idlabel;
         $table = escapeIdentifierConf($this->db, $this->type);
         $this->results = array();
-        $adds = $data["add"];
+        $adds = isset($data["add"]) ? $data["add"] : array();
         foreach($adds as $toadd) {
           if (isset($this->auth) && isset($this->auth['org'])) $toadd['organizationID']=$this->auth['org'];
           array_push($this->results,$this->insertRow($table, $toadd));
         }
-        $updates = $data["update"];
+        $updates = isset($data["update"]) ? $data["update"] : array();
+        array_push($this->results, $updates);
         foreach($updates as $toupdate) {
-          $tochange = $toupdate["data"];
-          if (isset($this->auth) && isset($this->auth['org'])) $tochange['organizationID']=$this->auth['org'];
-          array_push($this->results,$this->updateRow($table, $idlabel, $tochange[$idlabel], $tochange));
+          if (isset($this->auth) && isset($this->auth['org'])) $toupdate['organizationID']=$this->auth['org'];
+          array_push($this->results,$this->updateRow($table, $idlabel, $toupdate[$idlabel], $toupdate));
         }
         // $deletes = $data["delete"];
         // foreach($deletes as $todelete) {
