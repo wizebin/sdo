@@ -122,7 +122,7 @@
 
         $results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby);
 
-        if (count($links) > 0) {
+        if (count($links) > 0 && is_array($results) && count($results) > 0) {
           foreach($links as $link) {
             $childTable = $link['table'];
             $tableColumn = $link['tableColumn'];
@@ -272,13 +272,14 @@
           $primaryRay = array();
           array_push($fieldlist["fields"], array('name'=>'organizationID','sqltype'=>'INTEGER PRIMARY KEY'));
           foreach($fieldlist["fields"] as $field){
+            $this->results[$table]["result"]=$field;
             $name = $field['name'];
             $type = $field['sqltype'];
             if (strripos($type, "PRIMARY KEY")!==false){
               $type = str_ireplace("PRIMARY KEY", "", $type);
-              array_push($primaryRay,escapeIdentifierConf($db,$name));
+              array_push($primaryRay,escapeIdentifierConf($this->db,$name));
             }
-            array_push($describeray, escapeIdentifierConf($db,$name) . " " . escapeIdentifierConf($db,$type));
+            array_push($describeray, escapeIdentifierConf($this->db,$name) . " " . escapeIdentifierConf($this->db,$type));
           }
           if (count($primaryRay) == 1 && isset($fieldlist["keyname"])){
             array_push($primaryRay, $fieldlist["keyname"]);
@@ -290,14 +291,14 @@
           $fields = implode(", ", $describeray);
 
           $qrey = "CREATE TABLE IF NOT EXISTS $table ($fields);";
-          $res = executeConf($db,$qrey);
-          $this->results[$table]["result"]=$res;
+          $res = executeConf($this->db,$qrey);
+
           foreach($primaryRay as $col){
             $indexqrey = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema=DATABASE() AND table_name='$table' AND index_name='$col';";
-            $ires = executeConf($db, $indexqrey);
+            $ires = executeConf($this->db, $indexqrey);
             if ($ires==false || count($ires)==0){
               $adddexqrey = "CREATE INDEX $col ON $table($col);";
-              executeConf($db, $adddexqrey);
+              executeConf($this->db, $adddexqrey);
             }
           }
           $this->success=$res !== false && $res !== null;
