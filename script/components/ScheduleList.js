@@ -10,7 +10,7 @@ ScheduleList.prototype.getAppts = function(limit, page) {
   var that = this;
   console.log('get appts', limit, page);
   return new Promise(function(resolve, reject){
-    list('Schd', limit, page).then(function(data){
+    list('Schd', limit, page, null, [{ col: 'INV', direction: 'DESC' }]).then(function(data){
       var children = data.RESULTS.map(function(appt){
         var passData = translateApptFromRW(appt);
         return spawn('div', null, { className: 'apptLineItem', style: { height: '40px', marginBottom: '5px' }, onclick: function(){that.showJob(passData.jobID);}}, [

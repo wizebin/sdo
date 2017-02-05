@@ -69,6 +69,29 @@
       array_push($this->warn, $warn);
     }
 
+    public function insertRow($table, $data) {
+      $keys = "";
+      $vals = "";
+
+      if (is_array($data) && count($data)>0){
+        $keylist = array();
+        $vallist = array();
+
+        foreach($data as $key => $val){
+          array_push($keylist,escapeIdentifierConf($this->db,$key));
+          $value = escapeConf($this->db,$val);
+          if ($value == '') $value = "''";
+          array_push($vallist,$value);
+        }
+
+        $keys = implode(",",$keylist);
+        $vals = implode(",",$vallist);
+      }
+
+      $qrey = "INSERT INTO $table ($keys) VALUES($vals);";
+      $results = executeConf($this->db, $qrey);
+    }
+
     public function authenticate() {
       global $credtable, $creduser, $credpass, $credorg, $credid, $credseclevel;
       if (isset($credtable) && isset($creduser) && isset($credpass) && isset($credorg) && isset($credid)){
@@ -166,6 +189,7 @@
         $this->results=$results;
         $this->success=is_array($this->results);
       } else if ($this->verb == 'update') {
+        global $lastaffected;
         $table = escapeIdentifierConf($this->db, $this->type);
         $idlabel = escapeIdentifierConf($this->db, $this->idlabel);
         $id = escapeConf($this->db, $this->id);
@@ -190,28 +214,12 @@
         $this->affected=$lastaffected;
         $this->success=true;
       } else if ($this->verb == 'create') {
+        global $lastaffected, $lastid;
         $table = escapeIdentifierConf($this->db, $this->type);
 
         $data = json_decode($this->data,true);
 
-        $keys = "";
-        $vals = "";
-
-        if (is_array($data) && count($data)>0){
-          $keylist = array();
-          $vallist = array();
-
-          foreach($data as $key => $val){
-            array_push($keylist,escapeIdentifierConf($this->db,$key));
-            array_push($vallist,escapeConf($this->db,$val));
-          }
-
-          $keys = implode(",",$keylist);
-          $vals = implode(", ",$vallist);
-        }
-
-        $qrey = "INSERT INTO $table ($keys) VALUES($vals);";
-        $results = executeConf($this->db, $qrey);
+        $results = $this->insertRow($table, $data);
 
         if ($results){
           $this->results=$results;
@@ -224,6 +232,7 @@
           $this->success=false;
         }
       } else if ($this->verb == 'delete') {
+        global $lastaffected;
         if ($this->seclevel>=100){
           $table = escapeIdentifierConf($this->db, $this->type);
           $idlabel = escapeIdentifierConf($this->db, $this->idlabel);
@@ -241,6 +250,7 @@
           $this->addError('Security Level Too Low');
         }
       } else if ($this->verb == 'describe') {
+        global $lastaffected;
         $table = escapeIdentifierConf($this->db, $this->type);
         $results = describeTableConf($this->db, $table);
         $this->results=$results;
@@ -257,6 +267,7 @@
         $this->results=$results;
         $this->success=is_array($this->results);;
       } else if ($this->verb == 'arbitrary') {
+        global $lastaffected;
         if ($username==$masterUsername){
           $qrey = $this->query;
           $results = executeConf($this->db, $qrey);
@@ -272,7 +283,6 @@
           $primaryRay = array();
           array_push($fieldlist["fields"], array('name'=>'organizationID','sqltype'=>'INTEGER PRIMARY KEY'));
           foreach($fieldlist["fields"] as $field){
-            $this->results[$table]["result"]=$field;
             $name = $field['name'];
             $type = $field['sqltype'];
             if (strripos($type, "PRIMARY KEY")!==false){
@@ -292,7 +302,7 @@
 
           $qrey = "CREATE TABLE IF NOT EXISTS $table ($fields);";
           $res = executeConf($this->db,$qrey);
-
+          $this->results[$table]["result"]=$res;
           foreach($primaryRay as $col){
             $indexqrey = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema=DATABASE() AND table_name='$table' AND index_name='$col';";
             $ires = executeConf($this->db, $indexqrey);
@@ -302,6 +312,14 @@
             }
           }
           $this->success=$res !== false && $res !== null;
+        }
+      } else if ($this->verb == 'changes'){
+        $data = json_decode($this->data, true);
+        $table = escapeIdentifierConf($this->db, $this->type);
+        $this->results = array();
+        $adds = $data["add"];
+        foreach($adds as $toadd) {
+          array_push($this->results,$this->insertRow($table, $toadd));
         }
       } else if ($this->verb == 'getpage') {
         if (preg_match('/^([\w\d_]+\.?([\w\d_]+)?)$/', $this->page)){
@@ -318,6 +336,8 @@
         } else {
           $this->addError('does not match acceptable page pattern');
         }
+      } else if ($this->verb == 'auth') {
+        $this->success = $this->auth !== null;
       } else {
         $this->addError('unknown verb');
       }
