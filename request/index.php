@@ -77,12 +77,12 @@
           $results = executeConf($this->db, $qrey);
           if (is_array($results) && count($results) === 1) {
             $ret = array();
-            $ret['id'] = $ret[$credid];
-            $ret['user'] = $ret[$creduser];
-            $ret['org'] = $ret[$credorg];
-            $ret['seclevel'] = $ret[$credseclevel];
+            $ret['id'] = $results[0][$credid];
+            $ret['user'] = $results[0][$creduser];
+            $ret['org'] = $results[0][$credorg];
+            $ret['seclevel'] = $results[0][$credseclevel];
             $this->auth=$ret;
-            $this->securityLevel = $ret[$credseclevel];
+            $this->securityLevel = $results[0][$credseclevel];
             return true;
           } else {
             $this->success=false;
