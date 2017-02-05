@@ -461,7 +461,9 @@ function getClassState(obj, keys) {
 
 function setClassState(obj, state) {
   return (getObjectKeys(state) || []).forEach((key) => {
-    if (key in obj) {
+    if (obj.customStateCallback) {
+        obj.customStateCallback(obj, state, key);
+    } else if (key in obj) {
       if ('value' in obj[key]) {
         obj[key].value  = state[key];
       }/* else if ('innerHTML' in obj[key]) {

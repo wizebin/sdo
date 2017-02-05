@@ -1,7 +1,7 @@
 var App = function(parent) {
   var that = me(this);
   this.view = spawn('div', parent, { className: 'app', style: {} });
-  this.topView = spawn('div', this.view, { className: 'topView', style: { flex: '0 0 60px', display: 'flex', zIndex: '1' } });
+  this.topView = spawn('div', this.view, { className: 'topView', style: { flex: '0 0 60px', display: 'flex', zIndex: '1', justifyContent: 'space-between', alignItems: 'stretch' } });
   this.mainView = spawn('div', this.view, { className: 'mainWrapper', style: { flex: '1', display: 'flex' } });
   this.leftView = spawn('div', this.mainView, { className: 'leftWrapper' });
   this.leftWrapper = spawn('div', this.leftView, { className: 'leftWrapperWrapper' });
@@ -12,6 +12,17 @@ var App = function(parent) {
     spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
     spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
     spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
+  ]);
+
+  this.navControls = spawn('div', this.topView, { style: { margin: '10px', alignSelf: 'center' } }, [
+    spawn('button', null, { onclick: function(){
+      setCookie('creduser', '');
+      setCookie('credpass', '');
+      var appview = document.getElementById('app');
+      appview.innerHTML = '';
+      new LoginView(appview);
+
+    } }, 'logout' ),
   ]);
 
   this.onOpenPage();

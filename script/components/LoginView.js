@@ -6,7 +6,7 @@ var LoginView = function(parent, props) {
   this.password = spawn('input', this.view, { placeholder: 'password', type: 'password' }, getCookie('credpass'));
   this.submit = spawn('button', this.view, { onclick: this.login }, 'Login');
   addButtonCallback(this.username, function(){that.password.focus();});
-  addButtonCallback(this.password, this.login);
+  addButtonCallback(this.password, function(){that.login(false);});
 
   this.login(true);
 }

@@ -5,7 +5,7 @@ var NavigatePanel = function(parent, props) {
   this.content = spawn('div', this.view, { className: 'navContent' });
   this.backButton = spawn('button', this.header, { className: 'navBack', onclick: this.onBack, style: { display: 'none' } }, 'back');
   spawn('div', this.header, { className: 'navTitleWrapper' }, [
-    this.headerTitle = spawn('h3', this.header, { className: 'navTitle' }),
+    // this.headerTitle = spawn('h3', this.header, { className: 'navTitle' }),
   ]);
   this.viewStack = [];
 }
@@ -16,7 +16,7 @@ NavigatePanel.prototype.refreshView = function() {
   } else {
     this.backButton.style.display = 'none';
   }
-  this.headerTitle.innerHTML = this.title;
+  // this.headerTitle.innerHTML = this.title;
 }
 
 NavigatePanel.prototype.navigate = function(child, passData) {

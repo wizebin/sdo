@@ -39,20 +39,39 @@ var JobStatStrings = [
  'Currently Scheduled',
  'Dispatched to Tech',
  'Tech Reported',
- 'Incomplete',
  'Waiting for Parts',
  'Pending Authorization',
- 'Other',
  'Completed',
  'Recorded to SlsJrnl',
- 'Marked for Deletion'];
+ 'Marked for Deletion',
+ 'Other',];
+
+ var JobStatColors = {
+ 'Working to Schedule': '#afa',
+ 'Currently Scheduled': '#00a8ff',
+ 'Dispatched to Tech': '#28b333',
+ 'Tech Reported': '#ffa800',
+ 'Waiting for Parts': '#ccc',
+ 'Pending Authorization': '#faa',
+ 'Completed': '#faf',
+ 'Recorded to SlsJrnl': '#555',
+ 'Marked for Deletion': '#f66',
+ 'Other': '#eee'};
+
+ function borderColorForStatus(status) {
+  return JobStatColors[status] || '#eee';
+ }
 
 function stringStatus(statusNumber) {
   var statusIndex = Number(statusNumber);
-  return JobStatStrings[statusIndex];
+  return JobStatStrings[statusIndex-1];
 }
 
 function translateJobFromRW(data) {
+  var appts = (data.Schd || []).map(function(schd) {
+    return translateApptFromRW(schd);
+  });
+
   return {
     customer: {
       name: data.CstmrNm,
@@ -78,7 +97,7 @@ function translateJobFromRW(data) {
       phoneLabel3: data.LTelSffx3,
       email: data.LctnEmail,
     },
-    schedule: { statusDropdown: stringStatus(data.Status) },
+    schedule: { statusDropdown: stringStatus(data.Status), appts },
     note: { note: data.History },
     id: data.Inv,
     description: data.Dscrptn,

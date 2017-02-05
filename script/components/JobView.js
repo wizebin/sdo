@@ -13,7 +13,7 @@ var JobView = function(parent, props) {
 
   this.note = new NoteView(this.customerNoteWrapper, { style: { minHeight: '400px'}, disabled: true });
 
-  this.schedule = new ScheduleView(this.scheduleWrapper, { onSchedule: function(){}, appts: ['5/5/2017 5:59PM'] });
+  this.schedule = new ScheduleView(this.scheduleWrapper, { onSchedule: function(){} });
 
   this.addNoteButton = spawn('button', this.extraNavWrapper, { onclick: function(){
     new Promise(function(resolve, reject) {

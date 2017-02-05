@@ -6,18 +6,14 @@ var JobList = function(parent, props) {
   this.list = new ListView(this.view, { getDataCallback: this.getJobs, limit: 20 });
 }
 
-var jobLinks = [
-  {table: 'Schd', tableColumn: 'Inv', parentColumn: 'Inv'},
-];
-
 JobList.prototype.getJobs = function(limit, page) {
   var that = this;
-  console.log('getjobs', limit, page);
   return new Promise(function(resolve, reject){
-    list('Wip', limit, page, jobLinks).then(function(data){
+    list('Wip', limit, page, jobLinks, [{ col: 'INV', direction: 'DESC' }]).then(function(data){
       var children = data.RESULTS.map(function(job){
         var passData = translateJobFromRW(job);
-        return spawn('div', null, { className: 'jobLineItem', style: { height: '80px', marginBottom: '5px' }, onclick: function(){that.showJob(passData);}}, [
+        var borderColor = borderColorForStatus(passData.status);
+        return spawn('div', null, { className: 'jobLineItem', style: { height: '80px', marginBottom: '5px', borderLeft: '5px solid ' + borderColor }, onclick: function(){that.showJob(passData);}}, [
           spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch' } }, [
             spawn('div', null, {style: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}, [
               spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, passData.location.name || passData.customer.name),

@@ -27,6 +27,19 @@ ScheduleView.prototype.displayAppointments = function() {
   var that = this;
   removeAllChildren(this.apptView);
   (this.appts || []).forEach(function(apptData) {
-    var appt = spawn('button', that.apptView, { className: 'apptButton' }, JSON.stringify(apptData));
+    var appt = spawn('div', that.apptView, { className: 'apptButton' }, [
+      spawn('span', null, {}, apptData.time),
+      spawn('span', null, {}, apptData.tech),
+    ]);
   }, this);
+}
+
+ScheduleView.prototype.customStateCallback = function(obj, state, key){
+  console.log('custom state callback schedule', key);
+  if (key == 'statusDropdown') {
+    this.statusDropdown.value = state[key];
+  } else if (key == 'appts') {
+    this.appts = state[key];
+    this.displayAppointments();
+  }
 }

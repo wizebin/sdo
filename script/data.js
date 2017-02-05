@@ -55,3 +55,7 @@ function auth(username, password) {
     });
   });
 }
+
+var jobLinks = [
+  {table: 'Schd', tableColumn: 'Inv', parentColumn: 'Inv'},
+];

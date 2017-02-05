@@ -99,7 +99,9 @@
         $sets = " SET ";
         $setlist = array();
         foreach($data as $key => $val){
-          array_push($setlist, escapeIdentifierConf($this->db,$key) . " = " . escapeConf($this->db,$val));
+          $value = escapeConf($this->db,$val);
+          if ($value == '') $value = "''";
+          array_push($setlist, escapeIdentifierConf($this->db,$key) . " = " . $value);
         }
         $sets .= implode(", ",$setlist);
       }
@@ -153,14 +155,14 @@
         $this->results=$results;
         $this->success=is_array($this->results);
       } else if ($this->verb == 'list') {
-        $filters = isset($this->filters)?$this->filters:array(); // ['id'=>123]
+        $filters = isset($this->filters)&&is_array($this->filters)?$this->filters:array(); // ['id'=>123]
         $sortby = isset($this->sortby)?$this->sortby:array(); //['id'=>'DESC']
         $links = isset($this->links)?$this->links:array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
 
-        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => '=', 'obj' => $this->auth['org']));
+        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => 'eq', 'obj' => $this->auth['org']));
 
         $results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby);
 
@@ -189,7 +191,7 @@
                 if (!isset($results[$idtoindex[$irow[$tableColumn]]][$childTable])) {
                   $results[$idtoindex[$irow[$tableColumn]]][$childTable] = array();
                 }
-                $results[$idtoindex[$irow[$tableColumn]]][$childTable]=$irow;
+                array_push($results[$idtoindex[$irow[$tableColumn]]][$childTable], $irow);
               }
             }
           }
@@ -198,12 +200,12 @@
         $this->results=$results;
         $this->success=is_array($this->results);
       } else if ($this->verb == 'count') {
-        $filters = isset($this->filters)?json_decode($this->filters,true):array(); // ['id'=>123]
+        $filters = isset($this->filters)&&is_array($this->filters)?$this->filters:array(); // ['id'=>123]
         $sortby = isset($this->sortby)?json_decode($this->sortby,true):array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
-        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => '=', 'obj' => $this->auth['org']));
+        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => 'eq', 'obj' => $this->auth['org']));
 
         $results = listWithParamsConf($this->db, $table, null, null, $filters, $sortby, true);
 
