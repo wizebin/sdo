@@ -139,6 +139,41 @@
       }
     }
 
+    public function applyLinksToResults() {
+      $links = isset($this->links)?$this->links:array(); //['id'=>'DESC']
+
+      if (count($links) > 0 && is_array($this->results) && count($this->results) > 0) {
+        foreach($links as $link) {
+          $childTable = $link['table'];
+          $tableColumn = $link['tableColumn'];
+          $parentColumn = $link['parentColumn'];
+
+          $idtoindex = array();
+          $resultIds = array();
+
+          foreach($this->results as $key => $row) {
+            array_push($resultIds, escapeConf($this->db, $row[$parentColumn]));
+            $idtoindex[$row[$parentColumn]]=$key;
+          }
+          $stringIds = implode(', ',$resultIds);
+
+          $iqrey = "SELECT * FROM $childTable WHERE $tableColumn in ($stringIds)";
+          if (isset($this->auth) && isset($this->auth['org'])) $iqrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
+
+          $ires = executeConf($this->db, $iqrey);
+
+          if (count($ires) > 0) {
+            foreach($ires as $irow) {
+              if (!isset($this->results[$idtoindex[$irow[$tableColumn]]][$childTable])) {
+                $this->results[$idtoindex[$irow[$tableColumn]]][$childTable] = array();
+              }
+              array_push($this->results[$idtoindex[$irow[$tableColumn]]][$childTable], $irow);
+            }
+          }
+        }
+      }
+    }
+
     public function request() {
       if ($this->openDB() === false) {
         $this->addError('could not open DB');
@@ -150,54 +185,23 @@
 
         $qrey = "SELECT * FROM $table WHERE $idlabel = $id";
         if (isset($this->auth) && isset($this->auth['org'])) $qrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
-        $results = executeConf($this->db, $qrey);
 
-        $this->results=$results;
+        $this->results = executeConf($this->db, $qrey);
+        $this->applyLinksToResults();
+
         $this->success=is_array($this->results);
       } else if ($this->verb == 'list') {
         $filters = isset($this->filters)&&is_array($this->filters)?$this->filters:array(); // ['id'=>123]
         $sortby = isset($this->sortby)?$this->sortby:array(); //['id'=>'DESC']
-        $links = isset($this->links)?$this->links:array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
 
         if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => 'eq', 'obj' => $this->auth['org']));
 
-        $results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby);
+        $this->results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby);
+        $this->applyLinksToResults();
 
-        if (count($links) > 0 && is_array($results) && count($results) > 0) {
-          foreach($links as $link) {
-            $childTable = $link['table'];
-            $tableColumn = $link['tableColumn'];
-            $parentColumn = $link['parentColumn'];
-
-            $idtoindex = array();
-            $resultIds = array();
-
-            foreach($results as $key => $row) {
-              array_push($resultIds, escapeConf($this->db, $row[$parentColumn]));
-              $idtoindex[$row[$parentColumn]]=$key;
-            }
-            $stringIds = implode(', ',$resultIds);
-
-            $iqrey = "SELECT * FROM $childTable WHERE $tableColumn in ($stringIds)";
-            if (isset($this->auth) && isset($this->auth['org'])) $iqrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
-
-            $ires = executeConf($this->db, $iqrey);
-
-            if (count($ires) > 0) {
-              foreach($ires as $irow) {
-                if (!isset($results[$idtoindex[$irow[$tableColumn]]][$childTable])) {
-                  $results[$idtoindex[$irow[$tableColumn]]][$childTable] = array();
-                }
-                array_push($results[$idtoindex[$irow[$tableColumn]]][$childTable], $irow);
-              }
-            }
-          }
-        }
-
-        $this->results=$results;
         $this->success=is_array($this->results);
       } else if ($this->verb == 'count') {
         $filters = isset($this->filters)&&is_array($this->filters)?$this->filters:array(); // ['id'=>123]
@@ -294,6 +298,9 @@
           $describeray = array();
           $primaryRay = array();
           array_push($fieldlist["fields"], array('name'=>'organizationID','sqltype'=>'INTEGER PRIMARY KEY'));
+          array_push($fieldlist["fields"], array('name'=>'updated_at','sqltype'=>'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+          array_push($fieldlist["fields"], array('name'=>'updated_by','sqltype'=>'VARCHAR(128)'));
+          array_push($fieldlist["fields"], array('name'=>'updated_source','sqltype'=>'VARCHAR(128)'));
           foreach($fieldlist["fields"] as $field){
             $name = $field['name'];
             $type = $field['sqltype'];
@@ -333,13 +340,14 @@
         $adds = isset($data["add"]) ? $data["add"] : array();
         foreach($adds as $toadd) {
           if (isset($this->auth) && isset($this->auth['org'])) $toadd['organizationID']=$this->auth['org'];
-          array_push($this->results,$this->insertRow($table, $toadd));
+          $retz = $this->insertRow($table, $toadd);
+          if ($retz !== null) array_push($this->results, $retz);
         }
         $updates = isset($data["update"]) ? $data["update"] : array();
-        array_push($this->results, $updates);
         foreach($updates as $toupdate) {
           if (isset($this->auth) && isset($this->auth['org'])) $toupdate['organizationID']=$this->auth['org'];
-          array_push($this->results,$this->updateRow($table, $idlabel, $toupdate[$idlabel], $toupdate));
+          $retz = $this->updateRow($table, $idlabel, $toupdate[$idlabel], $toupdate);
+          if ($retz !== null) array_push($this->results, $retz);
         }
         // $deletes = $data["delete"];
         // foreach($deletes as $todelete) {
@@ -407,7 +415,6 @@
 
       return $this;
     }
-
     public function toReturnArray() {
       global $dberrors;
       $ret = array();

@@ -57,7 +57,7 @@ function executeMYSQL($db, $query){
   $result = $db->query($query);
 
   if($result==null){
-    noteError($query . " iquery error ".mysqli_errno($db)." : ".mysqli_error($db));
+    noteError("iquery error ".mysqli_errno($db)." : ".mysqli_error($db));
   }
   else if ($result && gettype($result)!='boolean'){
     $retval = array();

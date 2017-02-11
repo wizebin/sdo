@@ -30,11 +30,11 @@ function createOrUpdate(data) {
   });
 }
 
-function get(type, id, idlabel) {
+function get(type, id, idlabel, links) {
   var username = settings.username;
   var password = settings.password;
   return new Promise(function(resolve, reject){
-    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'get', type, id, idlabel, username, password })).then(function(data){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'get', type, id, idlabel, username, password, links })).then(function(data){
       resolve(JSON.parse(data));
     });
   });

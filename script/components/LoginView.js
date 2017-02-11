@@ -2,8 +2,8 @@ var LoginView = function(parent, props) {
   var that = me(this, props);
   this.view = spawn('div', parent, { className: 'loginView', style: {} });
   this.errorContainer = spawn('div', this.view, { style: { marginBottom: '10px' } });
-  this.username = spawn('input', this.view, { placeholder: 'username', type: 'username' }, getCookie('credname'));
-  this.password = spawn('input', this.view, { placeholder: 'password', type: 'password' }, getCookie('credpass'));
+  this.username = spawn('input', this.view, { placeholder: 'username', type: 'username' }, getCookie('credname') || getLocal('credname'));
+  this.password = spawn('input', this.view, { placeholder: 'password', type: 'password' }, getCookie('credpass') || getLocal('credpass'));
   this.submit = spawn('button', this.view, { onclick: this.login }, 'Login');
   addButtonCallback(this.username, function(){that.password.focus();});
   addButtonCallback(this.password, function(){that.login(false);});
@@ -16,8 +16,8 @@ LoginView.prototype.login = function(noLoginError) {
   var username = this.username.value;
   var password = this.password.value;
 
-  setCookie('credname', username);
-  setCookie('credpass', password);
+  setCookie('credname', username);setLocal('credname', username);
+  setCookie('credpass', password);setLocal('credpass', password);
 
   getPage('app.php', username, password).then(function(data) {
     if (data.SUCCESS) {

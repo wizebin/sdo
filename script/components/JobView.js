@@ -24,6 +24,33 @@ var JobView = function(parent, props) {
   this.pvrButton = spawn('button', this.extraNavWrapper, { onclick: function(){} }, 'Report On Job');
 }
 
+JobView.prototype.startLoading = function() {
+
+}
+
+JobView.prototype.stopLoading = function() {
+
+}
+
+JobView.prototype.loadJob = function(jobId) {
+  var that = this;
+  this.startLoading();
+  return new Promise(function(resolve, reject){
+    get('Wip', jobId, 'Inv', jobLinks).then(function(data){
+      if (data.SUCCESS) {
+        var jobData = data.RESULTS[0];
+        var passData = translateJobFromRW(jobData);
+        that.setState(passData);
+        that.stopLoading();
+        resolve(jobData);
+      } else {
+        that.stopLoading();
+        resolve(false);
+      }
+    });
+  });
+}
+
 JobView.prototype.getTitle = function() {
   return 'job';
 }

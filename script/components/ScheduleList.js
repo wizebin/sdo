@@ -29,10 +29,7 @@ ScheduleList.prototype.getAppts = function(limit, page) {
 
 ScheduleList.prototype.showJob = function(jobID) {
   var job = new JobView();
-  get('Wip', jobID, 'Inv', jobLinks).then(function(data){
-    var jobData = translateJobFromRW(data.RESULTS[0]);
-    job.setState(jobData);
-  });
+  job.loadJob(jobID);
   job.navPush = this.navPush;
   job.navPop = this.navPop;
   this.navPush(job);

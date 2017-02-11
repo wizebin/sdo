@@ -244,6 +244,14 @@ function getCookie(cname) {
   return null;
 }
 
+function setLocal(key, value) {
+  return localStorage.setItem(key, value);
+}
+
+function getLocal(key) {
+  return localStorage.getItem(key);
+}
+
 //http://stackoverflow.com/a/20584396
 function nodeScriptReplace(node) {
   if ( nodeScriptIs(node) === true ) {
