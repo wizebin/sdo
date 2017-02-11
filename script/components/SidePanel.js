@@ -8,5 +8,6 @@ var SidePanel = function(parent, props) {
     this.partsListButton = spawn('button', null, { className: 'navButton', onclick: function(){ that.nav(new PartsList()) } }, 'Parts'),
     this.rolodexButton = spawn('button', null, { className: 'navButton', onclick: function(){ that.nav(new Rolodex()) } }, 'Rolodex'),
     this.reportsButton = spawn('button', null, { className: 'navButton', onclick: function(){ that.nav(new ReportsView()) } }, 'Reports'),
+    this.GenericListButton = spawn('button', null, { className: 'navButton', onclick: function(){ that.nav(new GenericList()) } }, 'Debug List'),
   ]);
 }

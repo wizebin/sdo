@@ -3,7 +3,7 @@ var ScheduleList = function(parent, props) {
   mixinAutoState(that);
   this.view = spawn('div', parent, { className: 'scheduleListView' });
 
-  this.list = new ListView(this.view, { getDataCallback: this.getAppts });
+  this.list = new ListView(this.view, { getDataCallback: this.getAppts, getCountCallback: this.countList });
 }
 
 ScheduleList.prototype.getAppts = function(limit, page) {
@@ -23,6 +23,19 @@ ScheduleList.prototype.getAppts = function(limit, page) {
         ]);
       }) || [];
       resolve(children);
+    });
+  });
+}
+
+ScheduleList.prototype.countList = function() {
+  var that = this;
+  return new Promise(function(resolve, reject){
+    count('Schd').then(function(data){
+      if (data.SUCCESS) {
+        resolve(data.RESULTS[0].count);
+      } else {
+        resolve(false);
+      }
     });
   });
 }

@@ -1,20 +1,20 @@
 /// crud create update delete
 
-function list(type, limit, page, links, sortby) {
+function list(type, limit, page, links, sortby, filters) {
   var username = settings.username;
   var password = settings.password;
   return new Promise(function(resolve, reject){
-    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page, links, username, password, sortby })).then(function(data){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page, links, username, password, sortby, filters })).then(function(data){
       resolve(JSON.parse(data));
     });
   });
 }
 
-function count(type) {
+function count(type, filters) {
   var username = settings.username;
   var password = settings.password;
   return new Promise(function(resolve, reject){
-    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'count', type, username, password })).then(function(data){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'count', type, username, password, filters })).then(function(data){
       resolve(JSON.parse(data));
     });
   });
@@ -35,6 +35,16 @@ function get(type, id, idlabel, links) {
   var password = settings.password;
   return new Promise(function(resolve, reject){
     httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'get', type, id, idlabel, username, password, links })).then(function(data){
+      resolve(JSON.parse(data));
+    });
+  });
+}
+
+function tables() {
+  var username = settings.username;
+  var password = settings.password;
+  return new Promise(function(resolve, reject){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'tables', username, password })).then(function(data){
       resolve(JSON.parse(data));
     });
   });

@@ -275,8 +275,8 @@ function escapeIdentifierMSSQL($dbHandle, $data){
 function listTablesMYSQL($db, $database){
   $catalog='';
   if ($database!==null)
-    $catalog= " IN $database";
-  return executeMYSQL($db, "SHOW TABLES$catalog;");
+    $catalog= " AND TABLE_SCHEMA = '$database'";
+  return executeMYSQL($db, "select * from information_schema.tables WHERE NOT (TABLE_SCHEMA = 'information_schema')$catalog");
 }
 function listTablesPGSQL($db, $database){
   $catalog='';

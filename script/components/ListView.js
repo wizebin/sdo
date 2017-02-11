@@ -7,9 +7,11 @@ var ListView = function(parent, props) {
     spawn('button', null, {}, 'filter'),
     that.status = spawn('span', null, {}),
     spawn('div', null, {}, [
-      that.prevButton = spawn('button', null, { onclick: that.prevPage }, 'prev page'),
+      that.firstButton = spawn('button', null, { className: 'paginateButton', onclick: that.firstPage }, 'first'),
+      that.lastButton = spawn('button', null, { className: 'paginateButton', onclick: that.lastPage }, 'last'),
       that.curPage = spawn('span', null, { style: { display: 'inline-block', padding: '5px' } }, ''),
-      that.nextButton = spawn('button', null, { onclick: that.nextPage }, 'next page'),
+      that.prevButton = spawn('button', null, { className: 'paginateButton', onclick: that.prevPage }, 'prev page'),
+      that.nextButton = spawn('button', null, { className: 'paginateButton', onclick: that.nextPage }, 'next page'),
     ]),
   ]);
 
@@ -18,8 +20,24 @@ var ListView = function(parent, props) {
   if (!this.page) this.page = 0;
   if (!this.limit) this.limit = 20;
   this.loading = 0;
+  this.totalCount = null;
 
   this.getData();
+}
+
+ListView.prototype.firstPage = function() {
+  this.page = 0;
+  this.getData();
+}
+
+ListView.prototype.lastPage = function() {
+  var that = this;
+  if (this.limit) {
+    this.getTotalCount().then(function(count){
+      that.page = (Math.floor(count / that.limit));
+      that.getData();
+    });
+  }
 }
 
 ListView.prototype.prevPage = function() {
@@ -50,6 +68,24 @@ ListView.prototype.subLoad = function() {
   }
 }
 
+ListView.prototype.getTotalCount = function() {
+  var that = this;
+  return new Promise(function(resolve, reject){
+    that.addLoad();
+    if (that.getCountCallback) {
+      that.getCountCallback(that.limit, that.page).then(function(count){
+        console.log('gettotalcount', count);
+        that.subLoad();
+        that.totalCount = count;
+        resolve(count);
+      });
+    } else {
+      resolve(false);
+    }
+  });
+
+}
+
 ListView.prototype.getData = function() {
   var that = this;
   console.log('list get data', this.limit, this.page);
@@ -57,6 +93,7 @@ ListView.prototype.getData = function() {
   that.addLoad();
   if (this.getDataCallback) {
     this.getDataCallback(this.limit, this.page).then(function(children){
+      console.log('getdatacallback', children);
       that.subLoad();
       that.clearList();
       that.curPage.innerHTML = that.page;

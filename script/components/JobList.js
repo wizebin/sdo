@@ -3,7 +3,7 @@ var JobList = function(parent, props) {
   mixinAutoState(that);
   this.view = spawn('div', parent, { className: 'jobListView' });
 
-  this.list = new ListView(this.view, { getDataCallback: this.getJobs, limit: 20 });
+  this.list = new ListView(this.view, { getDataCallback: this.getJobs, getCountCallback: this.countJobs, limit: 20 });
 }
 
 JobList.prototype.getJobs = function(limit, page) {
@@ -47,6 +47,19 @@ JobList.prototype.getJobs = function(limit, page) {
         ]);
       }) || [];
       resolve(children);
+    });
+  });
+}
+
+JobList.prototype.countJobs = function() {
+  var that = this;
+  return new Promise(function(resolve, reject){
+    count('Wip').then(function(data){
+      if (data.SUCCESS) {
+        resolve(data.RESULTS[0].count);
+      } else {
+        resolve(false);
+      }
     });
   });
 }

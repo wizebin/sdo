@@ -135,6 +135,9 @@ button:active{
   padding: 6px 12px;
   margin: 5px 0px;
 }
+.paginateButton{
+  margin: 5px;
+}
 .navTitleWrapper {
   flex: 1;
   display: flex;
@@ -277,7 +280,7 @@ button:active{
   align-items: center;
   border-bottom: 2px solid #aaa;
 }
-.jobLineItem , .apptLineItem, .lineItem {
+.jobLineItem , .apptLineItem, .lineItem, .genericLineItem {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -289,11 +292,11 @@ button:active{
   margin-right: 5px;
   box-shadow: 0px 0px 5px #aaa;
 }
-.jobLineItem:hover, .apptLineItem:hover, .lineItem:hover {
+.jobLineItem:hover, .apptLineItem:hover, .lineItem:hover, .genericLineItem:hover {
   background-color: #aaa;
   cursor: pointer;
 }
-.jobLineItem:last-child, .apptLineItem:last-child, .lineItem:last-child {
+.jobLineItem:last-child, .apptLineItem:last-child, .lineItem:last-child, .genericLineItem:last-child {
   border-bottom: none;
   margin-bottom: 0px;
 }
@@ -313,4 +316,11 @@ button:active{
 .loginView>button {
   padding: 10px;
   color: #080;
+}
+.reportCountTable {
+  min-width: 275px;
+}
+.reportCountTable td, .reportCountTable th {
+  padding: 10px;
+  background-color: #fdfdfd;
 }
