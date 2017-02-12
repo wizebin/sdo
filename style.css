@@ -151,6 +151,10 @@ button:active{
 .jobView {
   background-color: transparent;
   min-height: 100px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .jobCustomerNoteWrapper {
   display: flex;
@@ -160,7 +164,6 @@ button:active{
 .jobCustomerWrapper {
   display: flex;
   flex-direction: row;
-  flex: 1;
   flex-wrap: wrap;
 }
 .jobScheduleWrapper {
@@ -223,7 +226,6 @@ button:active{
 }
 .scheduleView {
   background-color: transparent;
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -323,4 +325,7 @@ button:active{
 .reportCountTable td, .reportCountTable th {
   padding: 10px;
   background-color: #fdfdfd;
+}
+.genericView {
+  overflow: auto;
 }

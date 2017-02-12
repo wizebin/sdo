@@ -16,6 +16,10 @@ function isElement(o){
     o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string");
 }
 
+function isArray(ray){
+  return Object.prototype.toString.call(ray) === '[object Array]';
+}
+
 function getObjectKeys(obj) {
   var ret = [];
   for (var key in obj) {

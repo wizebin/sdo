@@ -68,4 +68,7 @@ function auth(username, password) {
 
 var jobLinks = [
   {table: 'Schd', tableColumn: 'Inv', parentColumn: 'Inv'},
+  {table: 'IList', tableColumn: 'Inv', parentColumn: 'Inv'},
+  {table: 'Fnds', tableColumn: 'Inv', parentColumn: 'Inv'},
+  {table: 'Sls', tableColumn: 'Inv', parentColumn: 'Inv'},
 ];

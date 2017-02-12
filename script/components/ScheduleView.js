@@ -1,7 +1,7 @@
 var ScheduleView = function(parent, props) {
   var that = me(this, props);
   mixinAutoState(that);
-  this.view = spawn('div', parent, { className: 'scheduleView' });
+  this.view = spawn('div', parent, { className: 'scheduleView', style: this.style });
 
   this.scheduleButton = spawn('button', this.view, { onclick: this.onSchedule, style: { marginBottom: '10px' } }, 'Schedule');
 

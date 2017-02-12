@@ -13,7 +13,7 @@ var JobView = function(parent, props) {
 
   this.note = new NoteView(this.customerNoteWrapper, { style: { minHeight: '400px'}, disabled: true });
 
-  this.schedule = new ScheduleView(this.scheduleWrapper, { onSchedule: function(){} });
+  this.schedule = new ScheduleView(this.scheduleWrapper, { onSchedule: function(){}, style: { flex: '0 0 200px' } });
 
   this.addNoteButton = spawn('button', this.extraNavWrapper, { onclick: function(){
     new Promise(function(resolve, reject) {
@@ -22,6 +22,8 @@ var JobView = function(parent, props) {
   } }, 'Add Note');
 
   this.pvrButton = spawn('button', this.extraNavWrapper, { onclick: function(){} }, 'Report On Job');
+
+  this.generic = new GenericView(this.scheduleWrapper, { style: { flex: '1' } });
 }
 
 JobView.prototype.startLoading = function() {
@@ -41,6 +43,7 @@ JobView.prototype.loadJob = function(jobId) {
         var jobData = data.RESULTS[0];
         var passData = translateJobFromRW(jobData);
         that.setState(passData);
+        that.generic.setState(passData.original);
         that.stopLoading();
         resolve(jobData);
       } else {

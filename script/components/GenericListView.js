@@ -33,10 +33,13 @@ GenericList.prototype.loadList = function(limit, page) {
         return;
       }
       var children = data.RESULTS.map(function(passData){
+        var keys = getObjectKeys(passData);
+        var columns = [];
+        for(var a = 0; a < keys.length && a < 10; a++) {
+          columns.push(spawn('span', null, { style: { flex: '1', textOverflow: 'ellipsis', marginLeft: '5px', marginRight: '5px', wordWrap: 'break-word', maxHeight: '100%', overflow: 'hidden' } }, passData[keys[a]]));
+        }
         return spawn('div', null, { className: 'genericLineItem', style: { marginBottom: '5px' }, onclick: function(){that.showGeneric(passData);}}, [
-          spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch', maxWidth: '100%', maxHeight: '100px' } }, [
-            spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', marginLeft: '5px', marginRight: '5px', wordWrap: 'break-word', maxHeight: '100%', overflow: 'hidden' } }, JSON.stringify(passData)),
-          ]),
+          spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'row', justifyContent: 'space-around', alignSelf: 'stretch', maxWidth: '100%', maxHeight: '100px' } }, columns),
         ]);
       }) || [];
       resolve(children);

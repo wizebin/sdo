@@ -18,6 +18,8 @@ var App = function(parent) {
     spawn('button', null, { onclick: function(){
       setCookie('creduser', '');
       setCookie('credpass', '');
+      setLocal('credname', '');
+      setLocal('credpass', '');
       var appview = document.getElementById('app');
       appview.innerHTML = '';
       new LoginView(appview);
