@@ -1,10 +1,10 @@
 /// crud create update delete
 
-function list(type, limit, page, links, sortby, filters) {
+function list(type, limit, page, joins, links, sortby, filters) {
   var username = settings.username;
   var password = settings.password;
   return new Promise(function(resolve, reject){
-    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page, links, username, password, sortby, filters })).then(function(data){
+    httpVERB((API_LOCATION || '') + 'request/', 'POST', JSON.stringify({ verb: 'list', type, limit, page, links, username, password, sortby, filters, joins })).then(function(data){
       resolve(JSON.parse(data));
     });
   });

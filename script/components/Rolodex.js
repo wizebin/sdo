@@ -15,7 +15,7 @@ var companyLinks = [
 Rolodex.prototype.loadData = function(limit, page) {
   var that = this;
   return new Promise(function(resolve, reject){
-    list('Companies', limit, page, companyLinks).then(function(data) {
+    list('Companies', limit, page, null, companyLinks).then(function(data) {
       if (data && data.RESULTS && data.SUCCESS) {
         var children = data.RESULTS.map(function(company) {
           var passData = company;// translateCompanyFromRW(company);
@@ -69,11 +69,7 @@ Rolodex.prototype.showcompany = function(data) {
   // company.navPush = this.navPush;
   // company.navPop = this.navPop;
   // this.navPush(company);
-  var generic = new GenericView();
-  generic.setState(data);
-  generic.navPush = this.navPush;
-  generic.navPop = this.navPop;
-  this.navPush(generic);
+  location.hash = "Company/" + data.ItemID;
 }
 
 Rolodex.prototype.getTitle = function() {

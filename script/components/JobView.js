@@ -34,7 +34,7 @@ JobView.prototype.stopLoading = function() {
 
 }
 
-JobView.prototype.loadJob = function(jobId) {
+JobView.prototype.loadData = function(jobId) {
   var that = this;
   this.startLoading();
   return new Promise(function(resolve, reject){

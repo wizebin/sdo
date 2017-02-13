@@ -9,7 +9,7 @@ var JobList = function(parent, props) {
 JobList.prototype.getJobs = function(limit, page) {
   var that = this;
   return new Promise(function(resolve, reject){
-    list('Wip', limit, page, jobLinks, [{ col: 'INV', direction: 'DESC' }]).then(function(data){
+    list('Wip', limit, page, null, jobLinks, [{ col: 'INV', direction: 'DESC' }]).then(function(data){
       var children = data.RESULTS.map(function(job){
         var passData = translateJobFromRW(job);
         console.log('passdata', passData);
@@ -65,12 +65,13 @@ JobList.prototype.countJobs = function() {
 }
 
 JobList.prototype.showJob = function(jobData) {
-  var job = new JobView();
-  job.setState(jobData);
-  job.navPush = this.navPush;
-  job.navPop = this.navPop;
-  this.navPush(job);
-  job.loadJob(jobData.id);
+  // var job = new JobView();
+  // job.setState(jobData);
+  // job.navPush = this.navPush;
+  // job.navPop = this.navPop;
+  // this.navPush(job);
+  // job.loadData(jobData.id);
+  location.hash = "Job/" + jobData.id;
 }
 
 JobList.prototype.getTitle = function() {

@@ -1,5 +1,6 @@
 <?php include_once ("creds.php");
 $GLOBALS['dberrors'] = array();$lasterror="";$lastid=null;$lastaffected=null;
+function isGet(&$m){return (isset($m)) ? $m : null;}
 function exception_error_handler($errno, $errstr, $errfile, $errline ) {
     array_push($GLOBALS['dberrors'],"$errstr ($errno) IN $errfile ON LINE $errline");
 }
@@ -360,14 +361,42 @@ function getFilterFromDataMYPGSQL($db, $unescapedcol, $word, $unescapedval, $ism
   return null;
 }
 
-function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
+function getJoinString($db, $parenttable, $childtable, $verb, $parentcol, $childcol) {
+  $joinword = ' LEFT JOIN ';
+  if ($verb === 'left') {
+
+  } else if ($verb === 'inner left') {
+    $joinword = ' INNER LEFT JOIN ';
+  }
+  $escChildTable = escapeIdentifierConf($db, $childtable);
+  $escParentTable = escapeIdentifierConf($db, $parenttable);
+  $escChildCol = escapeIdentifierConf($db, $childcol);
+  $escParentCol = escapeIdentifierConf($db, $parentcol);
+  return "$joinword $escChildTable ON $escParentTable.$escParentCol = $escChildTable.$escChildCol";
+}
+
+function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $joinlist = array(), $countOnly = false){
   $filterStatement = "";
   $sortStatement = "";
   $limitStatement = "";
-  $selector = "*";
+  $joinStatement = "";
+  $selector = "$table.*";
 
   $filterFinalList = array();
   $sortFinalList = array();
+
+  if (is_array($joinlist) && count($joinlist) > 0) {
+    foreach($joinlist as $join){
+      $escChildTable = escapeIdentifierConf($db, isget($join["table"]));
+      $addJoin = getJoinString($db, $table, isget($join["table"]), isget($join["verb"]), isget($join["parentColumn"]), isget($join["tableColumn"]));
+      if ($addJoin != null){
+        $joinStatement .= $addJoin;
+      }
+      foreach($join["cols"] as $col) {
+        $selector .= ', ' . $escChildTable . '.' . escapeIdentifierConf($db, $col);
+      }
+    }
+  }
 
   if (is_array($filterlist) && count($filterlist) > 0){
     if (array_key_exists('sub',$filterlist)&&array_key_exists('verb',$filterlist)){
@@ -417,17 +446,31 @@ function listWithParamsMYSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     $selector = 'COUNT(*) as count';
   }
 
-  $qrey = "SELECT $selector FROM $table" . $filterStatement . $sortStatement . $limitStatement . ';';
+  $qrey = "SELECT $selector FROM $table" . $joinStatement . $filterStatement . $sortStatement . $limitStatement . ';';
   return executeMYSQL($db, $qrey);
 }
-function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
+function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $joinlist = array(), $countOnly = false){
   $filterStatement = "";
   $sortStatement = "";
   $limitStatement = "";
-  $selector = "*";
+  $joinStatement = "";
+  $selector = "$table.*";
 
   $filterFinalList = array();
   $sortFinalList = array();
+
+  if (is_array($joinlist) && count($joinlist) > 0) {
+    foreach($joinlist as $join){
+      $escChildTable = escapeIdentifierConf($db, isget($join["table"]));
+      $addJoin = getJoinString($db, $table, isget($join["table"]), isget($join["verb"]), isget($join["parentColumn"]), isget($join["tableColumn"]));
+      if ($addJoin != null){
+        $joinStatement .= $addJoin;
+      }
+      foreach($join["cols"] as $col) {
+        $selector .= ', ' . $escChildTable . '.' . escapeIdentifierConf($db, $col);
+      }
+    }
+  }
 
   if (is_array($filterlist) && count($filterlist) > 0){
     if (array_key_exists('sub',$filterlist)&&array_key_exists('verb',$filterlist)){
@@ -477,10 +520,10 @@ function listWithParamsPGSQL($db, $table, $page = 0, $pagesize = 100, $filterlis
     $selector = 'COUNT(*) as count';
   }
 
-  $qrey = "SELECT $selector FROM $table $filterStatement $sortStatement $limitStatement;";
+  $qrey = "SELECT $selector FROM $table $joinStatement $filterStatement $sortStatement $limitStatement;";
   return executePGSQL($db, $qrey);
 }
-function listWithParamsMSSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
+function listWithParamsMSSQL($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $joinlist = array(), $countOnly = false){
 
 }
 
@@ -653,17 +696,17 @@ function listIndexedSQL($SQLType, $dbHandle, $table){
       return -1;
   }
 }
-function listWithParamsSQL($SQLType, $db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
+function listWithParamsSQL($SQLType, $db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $joinlist = array(), $countOnly = false){
   switch($SQLType){
     case 'mysql':
-      return listWithParamsMYSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
+      return listWithParamsMYSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $joinlist, $countOnly);
     break;
     case 'mssql':
-      return listWithParamsMSSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
+      return listWithParamsMSSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $joinlist, $countOnly);
     break;
     case 'pgsql':
     case 'postgres':
-      return listWithParamsPGSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
+      return listWithParamsPGSQL($db, $table, $page, $pagesize, $filterlist, $sortlist, $joinlist, $countOnly);
     break;
     default:
       return -1;
@@ -712,9 +755,9 @@ function listIndexedConf($db, $table){
   global $dbtype;
   return listIndexedSQL($dbtype, $db, $table);
 }
-function listWithParamsConf($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $countOnly = false){
+function listWithParamsConf($db, $table, $page = 0, $pagesize = 100, $filterlist = array(), $sortlist = array(), $joinlist, $countOnly = false){
   global $dbtype;
-  return listWithParamsSQL($dbtype, $db, $table, $page, $pagesize, $filterlist, $sortlist, $countOnly);
+  return listWithParamsSQL($dbtype, $db, $table, $page, $pagesize, $filterlist, $sortlist, $joinlist, $countOnly);
 }
 
 function safeFilename($pageName){

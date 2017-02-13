@@ -152,13 +152,16 @@
           $resultIds = array();
 
           foreach($this->results as $key => $row) {
-            array_push($resultIds, escapeConf($this->db, $row[$parentColumn]));
-            $idtoindex[$row[$parentColumn]]=$key;
+            if ($row[$parentColumn] !== null) {
+              array_push($resultIds, escapeConf($this->db, $row[$parentColumn]));
+              $idtoindex[$row[$parentColumn]]=$key;
+            }
           }
           $stringIds = implode(', ',$resultIds);
+          if ($stringIds === '') continue;
 
           $iqrey = "SELECT * FROM $childTable WHERE $tableColumn in ($stringIds)";
-          if (isset($this->auth) && isset($this->auth['org'])) $iqrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
+          if (isset($this->auth) && isset($this->auth['org'])) $iqrey .= " AND organizationID = " . escapeConf($this->db, $this->auth['org']);
 
           $ires = executeConf($this->db, $iqrey);
 
@@ -184,7 +187,7 @@
         $id = escapeConf($this->db, $this->id);
 
         $qrey = "SELECT * FROM $table WHERE $idlabel = $id";
-        if (isset($this->auth) && isset($this->auth['org'])) $qrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
+        if (isset($this->auth) && isset($this->auth['org'])) $qrey .= " AND $table.organizationID = " . escapeConf($this->db, $this->auth['org']);
 
         $this->results = executeConf($this->db, $qrey);
         $this->applyLinksToResults();
@@ -192,26 +195,28 @@
         $this->success=is_array($this->results);
       } else if ($this->verb == 'list') {
         $filters = isset($this->filters)&&is_array($this->filters)?$this->filters:array(); // ['id'=>123]
+        $joins = isset($this->joins)&&is_array($this->joins)?$this->joins:array();
         $sortby = isset($this->sortby)?$this->sortby:array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
 
-        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => 'eq', 'obj' => $this->auth['org']));
+        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => "$table.organizationID", 'verb' => 'eq', 'obj' => $this->auth['org']));
 
-        $this->results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby);
+        $this->results = listWithParamsConf($this->db, $table, $page, $pagesize, $filters, $sortby, $joins);
         $this->applyLinksToResults();
 
         $this->success=is_array($this->results);
       } else if ($this->verb == 'count') {
         $filters = isset($this->filters)&&is_array($this->filters)?$this->filters:array(); // ['id'=>123]
+        $joins = isset($this->joins)&&is_array($this->joins)?$this->joins:array();
         $sortby = isset($this->sortby)?json_decode($this->sortby,true):array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
         $pagesize = isset($this->limit)?$this->limit:0;
         $table = escapeIdentifierConf($this->db, $this->type);
-        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => 'organizationID', 'verb' => 'eq', 'obj' => $this->auth['org']));
+        if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => "$table.organizationID", 'verb' => 'eq', 'obj' => $this->auth['org']));
 
-        $results = listWithParamsConf($this->db, $table, null, null, $filters, $sortby, true);
+        $results = listWithParamsConf($this->db, $table, null, null, $filters, $sortby, $joins, true);
 
         $this->results=$results;
         $this->success=is_array($this->results);
@@ -253,7 +258,7 @@
           $id = escapeConf($this->db, $this->id);
 
           $qrey = "DELETE * FROM $table WHERE $idlabel = $id";
-          if (isset($this->auth) && isset($this->auth['org'])) $qrey .= ' AND organizationID = ' . escapeConf($this->db, $this->auth['org']);
+          if (isset($this->auth) && isset($this->auth['org'])) $qrey .= " AND $table.organizationID = " . escapeConf($this->db, $this->auth['org']);
           $qrey .= ' LIMIT 1';
           $results = executeConf($this->db, $qrey);
 
@@ -398,6 +403,8 @@
         $this->sortby = $encoded['sortby'];
       if (isset($encoded['filters']))
         $this->filters = $encoded['filters'];
+      if (isset($encoded['joins']))
+        $this->joins = $encoded['joins'];
       if (isset($encoded['page']))
         $this->page = $encoded['page'];
       if (isset($encoded['database']))

@@ -32,11 +32,12 @@ PartsList.prototype.getParts = function(limit, page) {
 }
 
 PartsList.prototype.showPart = function(partData) {
-  var generic = new GenericView();
-  generic.setState(partData);
-  generic.navPush = this.navPush;
-  generic.navPop = this.navPop;
-  this.navPush(generic);
+  // var generic = new GenericView();
+  // generic.setState(partData);
+  // generic.navPush = this.navPush;
+  // generic.navPop = this.navPop;
+  // this.navPush(generic);
+  location.hash = "Generic/IList/_ORDINAL/" + partData._ORDINAL;
 }
 
 PartsList.prototype.countList = function() {
