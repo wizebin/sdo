@@ -4,7 +4,7 @@ var LoginView = function(parent, props) {
   this.errorContainer = spawn('div', this.view, { style: { marginBottom: '10px' } });
   this.username = spawn('input', this.view, { placeholder: 'username', type: 'username' }, getCookie('credname') || getLocal('credname'));
   this.password = spawn('input', this.view, { placeholder: 'password', type: 'password' }, getCookie('credpass') || getLocal('credpass'));
-  this.submit = spawn('button', this.view, { onclick: this.login }, 'Login');
+  this.submit = spawn('button', this.view, { onclick: function(){that.login(false);} }, 'Login');
   addButtonCallback(this.username, function(){that.password.focus();});
   addButtonCallback(this.password, function(){that.login(false);});
 
