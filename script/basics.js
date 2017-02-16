@@ -59,8 +59,7 @@ function addButtonCallback(element, callback, keycode = 13) {
   });
 }
 
-function spawn(element, parent, props, children) {
-  var el = document.createElement(element);
+function applyPropsToElement(el, props) {
   if (props!=undefined) {
     var keys = getObjectKeys(props);
     keys.forEach(function(key) {
@@ -75,19 +74,14 @@ function spawn(element, parent, props, children) {
       }
     },this);
   }
-  if (parent) {
-    if (isString(parent)) {
-      var parent = document.getElementById(parent);
-      parent && parent.appendChild(el);
-    } else if (parent.appendChild) {
-      parent.appendChild(el);
-    }
-  }
+}
+
+function applyChildrenToElement(el, children) {
   if (children) {
     if (Array.isArray(children)) {
       children.forEach(function(child) {
         var tempchild = isElement(child) ? child : child.view;
-        el.appendChild(tempchild);
+        if (tempchild) el.appendChild(tempchild);
       }, this);
     } else if (isString(children)) {
       el.value=children;
@@ -97,14 +91,35 @@ function spawn(element, parent, props, children) {
       if (!el.kids) el.kids = {}; // named children
       keys.forEach(function(key){
         var child = isElement(children[key]) ? children[key] : children[key].view;
-        el.appendChild(child);
-        el.kids[key] = child;
+        if (child) {
+          el.appendChild(child);
+          el.kids[key] = child;
+        }
       },this);
     } else {
       el.innerHTML=JSON.stringify(children);
     }
   }
+}
+
+function spawn(element, parent, props, children) {
+  var el = document.createElement(element);
+  applyPropsToElement(el, props);
+  adopt(parent, el);
+  applyChildrenToElement(el, children);
   return el;
+}
+
+function spawnFromHtml(code, parent, props, children) {
+  var tmp = spawn('div', null, {}, code);
+  if (tmp.children.length === 1) {
+    var el = tmp.children[0];
+    applyPropsToElement(el, props);
+    adopt(parent, el);
+    applyChildrenToElement(el, children);
+    return el;
+  }
+  return undefined;
 }
 
 function getChildren(element) {
@@ -168,8 +183,15 @@ function getView(element) {
   return isElement(element) ? element : element && element.view;
 }
 
-function adopt(element, parent) {
-  if (isElement(element) && isElement(parent)) parent.appendChild(element);
+function adopt(parent, element) {
+  if (parent) {
+    if (isString(parent)) {
+      var parent = document.getElementById(parent);
+      parent && parent.appendChild(element);
+    } else if (parent.appendChild) {
+      parent.appendChild(element);
+    }
+  }
 }
 
 function abandon(element) {

@@ -8,14 +8,10 @@ var App = function(parent) {
   this.rightView = spawn('div', this.mainView, { className: 'rightWrapper', style: { height: '100%', flex: '1', overflow: 'auto' } });
   this.content = new NavigatePanel(this.rightView);
   this.nav = new SidePanel(this.leftWrapper, { navPush: this.content.pushView, navPop: this.content.popView, nav: this.navHash });
-  this.navButton = spawn('div', this.topView, { className: 'navSlideButton', onclick: this.toggleNav, style: { display: 'flex', justifyContent: 'space-around', alignItems: 'stretch', flexDirection: 'column', width: '45px', padding: '10px' } }, [
-    spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
-    spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
-    spawn('div', null, { style: { backgroundColor: '#333', flex: '0 0 3px' } }),
-  ]);
+  this.navButton = spawn('div', this.topView, { className: 'navSlideButton', onclick: this.toggleNav, style: { display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexDirection: 'column', width: '45px', padding: '10px' } }, new SlideSvg());
 
   this.navControls = spawn('div', this.topView, { style: { margin: '10px', alignSelf: 'center' } }, [
-    spawn('button', null, { onclick: function(){
+    spawn('div', null, { className: 'logoutButton', style: { display: 'flex', flexDirection: 'row', alignItems: 'center' }, onclick: function(){
       setCookie('creduser', '');
       setCookie('credpass', '');
       setLocal('credname', '');
@@ -24,7 +20,10 @@ var App = function(parent) {
       appview.innerHTML = '';
       new LoginView(appview);
 
-    } }, 'logout' ),
+    } }, [
+      new LogoutSvg(null, { style: { width: '25px', marginRight: '10px' } }),
+      spawn('span', null, { style: { flex: '1', fontSize: '12px' } }, 'Logout'),
+    ]),
   ]);
 
   this.onOpenPage();

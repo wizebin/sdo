@@ -14,6 +14,7 @@ html, body{
   height: 100%;
   background-color:#eee;
   font-family: "RobotoLight", "lucida grande", tahoma, verdana, arial, sans-serif;
+  fill: currentColor;
 }
 html, body, div, input, textarea {
   position: relative;
@@ -70,7 +71,7 @@ button:active{
   max-width: 320px;
   transition: max-width 200ms;
   border-right: 5px solid #d0d0d0;
-  flex: 0 0 20%;
+  flex: 0 0 180px;
   height: 100%;
 }
 .leftWrapperWrapper {
@@ -95,18 +96,46 @@ button:active{
 }
 .navButton {
   width: 100%;
-  padding: 20px;
-  font-size: 1.2em;
+  padding: 5px;
   background-color: transparent;
-  border: none;
-  border-bottom: 1px solid #333;
   border-radius: 0px;
+  color: #5a5a5a;
+  font-size: 12px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.sideSvgButton .navButton {
+  border-right: 1px solid;
+  border-left: none;
+  border-top: none;
+  border-bottom: 1px solid;
+}
+.sideSvgButton:first-child .navButton {
+  border-top: 1px solid;
+}
+.sideSvgButton .navButton:first-child {
+  border-left: 1px solid;
 }
 .navButton:hover {
   color: #00a8ff;
+  cursor: pointer;
 }
 .navButton:focus {
   background-color: transparent;
+}
+.logoutButton {
+  width: 100px;
+  height: 32px;
+  border: 1px solid #666;
+  padding: 4px 9px;
+  margin: 4px;
+}
+.logoutButton:hover {
+  color: #00a8ff;
+  cursor: pointer;
 }
 .navView {
   height: 100%;
@@ -328,4 +357,7 @@ button:active{
 }
 .genericView {
   overflow: auto;
+}
+.sideSvgButton {
+  max-height: 64px;
 }

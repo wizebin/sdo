@@ -98,7 +98,7 @@ ListView.prototype.getData = function() {
       that.clearList();
       that.curPage.innerHTML = that.page;
       children.forEach(function(child){
-        adopt(child, that.list);
+        adopt(that.list, child);
       });
     });
   } else {

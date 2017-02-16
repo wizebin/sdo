@@ -25,7 +25,7 @@ NavigatePanel.prototype.navigate = function(child, passData) {
     this.activeChild = child;
     this.activeChild.navPush = this.pushView;
     this.activeChild.navPop = this.popView;
-    adopt(getView(child), this.content);
+    adopt(this.content, getView(child));
     if (child.getTitle) this.title = child.getTitle();
     this.refreshView();
     if (passData) this.activeChild.callbackData && this.activeChild.callbackData(passData);
