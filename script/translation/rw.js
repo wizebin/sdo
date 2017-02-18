@@ -152,7 +152,7 @@ function stringStatus(statusNumber) {
 
 function translateName(incoming) {
   if (!incoming) return incoming;
-  return upperAllFirst(incoming.split(',').reverse().join(' '));
+  return upperAllFirst(incoming.split('  ')[0].split(', ').reverse().join(' '));
 }
 
 function translateAddressLine(incoming) {

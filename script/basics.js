@@ -51,9 +51,9 @@ function b64DecodeUnicode(str) {
     }).join(''));
 }
 
-function addButtonCallback(element, callback, keycode = 13) {
+function addButtonCallback(element, callback, keycode) {
   element.addEventListener("keyup", function(event) {
-    if (event.keyCode == 13) {
+    if (event.keyCode === (keycode || 13)) {
       callback&&callback(event, element);
     }
   });
