@@ -478,6 +478,20 @@ function formatDateTime(date){
   return  (date.getMonth()+1) +"/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes().toString().length==1?'0':'') + date.getMinutes();
 }
 
+function formatDateSane(date) {
+  if (!date) return '?/? ?:?? ??';
+  var hours;var pm;
+  if (date.getHours() < 12) {
+    pm = 'AM';
+    if (date.getHours() === 0) hours = 12;
+    else hours = date.getHours();
+  } else {
+    pm = 'PM';
+    hours = date.getHours() - 12;
+  }
+  return  (date.getMonth()+1) +"/" + date.getDate() + " " + hours + ":" + (date.getMinutes().toString().length==1?'0':'') + date.getMinutes() + ' ' + pm;
+}
+
 function getClassState(obj, keys) {
   return (keys || []).reduce((state, key) => {
     if (key in obj) {
@@ -528,4 +542,14 @@ function mixinAutoState(obj) {
   obj.setState = function(state) {
     setAutoState(obj, state);
   }
+}
+
+function upperFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+function upperAllFirst(str) {
+  return str.split(' ').map(function(st){
+    return upperFirst(st);
+  }).join(' ');
 }

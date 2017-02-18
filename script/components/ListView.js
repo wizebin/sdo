@@ -3,17 +3,19 @@ var ListView = function(parent, props) {
   mixinAutoState(that);
   this.view = spawn('div', parent, { className: 'listViewView' });
 
-  this.navheader = spawn('div', this.view, { className: 'listViewNavHeader' }, [
-    spawn('button', null, {}, 'filter'),
-    that.status = spawn('span', null, {}),
-    spawn('div', null, {}, [
-      that.firstButton = spawn('button', null, { className: 'paginateButton', onclick: that.firstPage }, 'first'),
-      that.lastButton = spawn('button', null, { className: 'paginateButton', onclick: that.lastPage }, 'last'),
-      that.curPage = spawn('span', null, { style: { display: 'inline-block', padding: '5px' } }, ''),
-      that.prevButton = spawn('button', null, { className: 'paginateButton', onclick: that.prevPage }, 'prev page'),
-      that.nextButton = spawn('button', null, { className: 'paginateButton', onclick: that.nextPage }, 'next page'),
-    ]),
-  ]);
+  if (!props.hideHeader) {
+    this.navheader = spawn('div', this.view, { className: 'listViewNavHeader' }, [
+      spawn('button', null, {}, 'filter'),
+      that.status = spawn('span', null, {}),
+      spawn('div', null, {}, [
+        that.firstButton = spawn('button', null, { className: 'paginateButton', onclick: that.firstPage }, 'first'),
+        that.lastButton = spawn('button', null, { className: 'paginateButton', onclick: that.lastPage }, 'last'),
+        that.curPage = spawn('span', null, { style: { display: 'inline-block', padding: '5px' } }, ''),
+        that.prevButton = spawn('button', null, { className: 'paginateButton', onclick: that.prevPage }, 'prev page'),
+        that.nextButton = spawn('button', null, { className: 'paginateButton', onclick: that.nextPage }, 'next page'),
+      ]),
+    ]);
+  }
 
   this.list = spawn('div', this.view, { className: 'listContent', style: { display: 'flex', flexDirection: 'column' } } );
 
@@ -21,6 +23,9 @@ var ListView = function(parent, props) {
   if (!this.limit) this.limit = 20;
   this.loading = 0;
   this.totalCount = null;
+
+  this.filters = [];
+  this.sorts = [];
 
   this.getData();
 }
@@ -34,7 +39,9 @@ ListView.prototype.lastPage = function() {
   var that = this;
   if (this.limit) {
     this.getTotalCount().then(function(count){
-      that.page = (Math.floor(count / that.limit));
+      console.log('countty', count, that.limit, count / that.limit);
+      that.page = (Math.ceil(count / that.limit))-1;
+      if (that.page < 0) that.page = 0;
       that.getData();
     });
   }
@@ -57,14 +64,14 @@ ListView.prototype.clearList = function() {
 
 ListView.prototype.addLoad = function() {
   this.loading++;
-  this.status.innerHTML = 'loading' + ( this.loading > 1 ? ` (${this.loading})` : '');
+  if (!this.hideHeader) this.status.innerHTML = 'loading' + ( this.loading > 1 ? ` (${this.loading})` : '');
 }
 
 ListView.prototype.subLoad = function() {
   this.loading--;
   if (this.loading <= 0) {
     this.loading = 0;
-    this.status.innerHTML = '';
+    if (!this.hideHeader) this.status.innerHTML = '';
   }
 }
 
@@ -73,7 +80,7 @@ ListView.prototype.getTotalCount = function() {
   return new Promise(function(resolve, reject){
     that.addLoad();
     if (that.getCountCallback) {
-      that.getCountCallback(that.limit, that.page).then(function(count){
+      that.getCountCallback(that.filters).then(function(count){
         console.log('gettotalcount', count);
         that.subLoad();
         that.totalCount = count;
@@ -83,20 +90,17 @@ ListView.prototype.getTotalCount = function() {
       resolve(false);
     }
   });
-
 }
 
 ListView.prototype.getData = function() {
   var that = this;
-  console.log('list get data', this.limit, this.page);
-  that.curPage.innerHTML = that.page;
+  if (!this.hideHeader) that.curPage.innerHTML = this.page;
   that.addLoad();
   if (this.getDataCallback) {
-    this.getDataCallback(this.limit, this.page).then(function(children){
-      console.log('getdatacallback', children);
+    this.getDataCallback(this.limit, this.page || 0, this.filters, this.sorts).then(function(children){
       that.subLoad();
       that.clearList();
-      that.curPage.innerHTML = that.page;
+      if (!that.hideHeader) that.curPage.innerHTML = that.page;
       children.forEach(function(child){
         adopt(that.list, child);
       });

@@ -73,12 +73,15 @@ App.prototype.navString = function(hashed) {
 
   var parts = loco.split("/");
   if (parts.length === 1){
+    if (parts[0] === 'Home') this.content.replaceView(new HomeView());
     if (parts[0] === 'Jobs') this.content.replaceView(new JobList());
+    if (parts[0] === 'Callsheets') this.content.replaceView(new CallsheetList());
     if (parts[0] === 'Appts') this.content.replaceView(new ScheduleList());
     if (parts[0] === 'Map') this.content.replaceView(new MapView());
     if (parts[0] === 'Parts') this.content.replaceView(new PartsList());
     if (parts[0] === 'Rolodex') this.content.replaceView(new Rolodex());
     if (parts[0] === 'Reports') this.content.replaceView(new ReportsView());
+    if (parts[0] === 'Messages') this.content.replaceView(new MessageList());
     if (parts[0] === 'Debug List') this.content.replaceView(new GenericList());
   } else if (parts.length >= 2){
     var display = this.content.activeChild;

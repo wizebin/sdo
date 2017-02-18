@@ -72,3 +72,7 @@ var jobLinks = [
   {table: 'Fnds', tableColumn: 'Inv', parentColumn: 'Inv'},
   {table: 'Sls', tableColumn: 'Inv', parentColumn: 'Inv'},
 ];
+
+var apptLinks = [
+  {table: 'Wip', tableColumn: 'Inv', parentColumn: 'Inv'},
+];

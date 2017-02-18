@@ -88,7 +88,7 @@
         $vals = implode(",",$vallist);
       }
 
-      $qrey = "INSERT INTO $table ($keys) VALUES($vals);";
+      $qrey = "REPLACE INTO $table ($keys) VALUES($vals);";
       $results = executeConf($this->db, $qrey);
     }
 
@@ -296,12 +296,13 @@
           $this->affected=$lastaffected;
         }
       } else if ($this->verb == 'structure') {
-        $tablelist = json_decode($this->data, true);
+        $tablelist = is_array($this->data) ? $this->data : json_decode($this->data, true);
         $this->results = array();
         foreach($tablelist as $fieldlist){
           $table = $fieldlist["name"];
           $describeray = array();
           $primaryRay = array();
+          $indexRay = array();
           array_push($fieldlist["fields"], array('name'=>'organizationID','sqltype'=>'INTEGER PRIMARY KEY'));
           array_push($fieldlist["fields"], array('name'=>'updated_at','sqltype'=>'TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
           array_push($fieldlist["fields"], array('name'=>'updated_by','sqltype'=>'VARCHAR(128)'));
@@ -312,6 +313,8 @@
             if (strripos($type, "PRIMARY KEY")!==false){
               $type = str_ireplace("PRIMARY KEY", "", $type);
               array_push($primaryRay,escapeIdentifierConf($this->db,$name));
+            } else if (strripos($type, "TEXT")===false){
+              array_push($indexRay,escapeIdentifierConf($this->db,$name));
             }
             array_push($describeray, escapeIdentifierConf($this->db,$name) . " " . escapeIdentifierConf($this->db,$type));
           }
@@ -327,12 +330,13 @@
           $qrey = "CREATE TABLE IF NOT EXISTS $table ($fields);";
           $res = executeConf($this->db,$qrey);
           $this->results[$table]["result"]=$res;
-          foreach($primaryRay as $col){
+          foreach(array_merge($primaryRay, $indexRay) as $col){
             $indexqrey = "SELECT COUNT(1) IndexIsThere FROM INFORMATION_SCHEMA.STATISTICS WHERE table_schema=DATABASE() AND table_name='$table' AND index_name='$col';";
             $ires = executeConf($this->db, $indexqrey);
-            if ($ires==false || count($ires)==0){
+            if ($ires==false || count($ires)==0 || $ires[0]["IndexIsThere"] == 0){
               $adddexqrey = "CREATE INDEX $col ON $table($col);";
-              executeConf($this->db, $adddexqrey);
+              $ires = executeConf($this->db, $adddexqrey);
+              $this->results[$table]["indexes"][$col]=$ires;
             }
           }
           $this->success=$res !== false && $res !== null;

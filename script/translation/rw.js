@@ -1,13 +1,96 @@
+function make24Hours(startTime, endTime) {
+  if (startTime >= endTime) {
+    endTime += 12;
+  } else if (startTime < 6) {
+    startTime += 12;
+    endTime += 12;
+  }
+  return {start: startTime, duration: endTime - startTime};
+}
+
+function translateTimeframe(timeframe) {
+  if (timeframe.length === 0) return undefined;
+  if (timeframe[0] === '!') return {start: 8, duration: 12};
+  var components = timeframe.split('-');
+  if (components.length === 1) {
+    if (components[0]=='AM') return {start: 6, duration: 6};
+    if (components[0]=='PM') return {start: 12, duration: 6};
+
+    if (!isNaN(Number(components[0]))) {
+      return {start: Number(components[0]), duration: 4};
+    } else {
+      return {start: 6, duration: 14};
+    }
+  } else {
+    var start = Number(components[0]);
+    var end = Number(components[1].split(' ')[0]);
+    if (!isNaN(start) && !isNaN(end)) {
+      return make24Hours(start, end);
+    }
+  }
+  return undefined;
+}
+
+function translateDate(appt, jobCreateYear) {
+  if (appt === undefined || appt === null) return undefined;
+  if (jobCreateYear === undefined){jobCreateYear = new Date().getFullYear();}
+
+  var dateComponents = appt.split(' ');
+  if (dateComponents.length < 3) return undefined;
+
+  var monthDay = dateComponents[0].split('/');
+  if (monthDay.length < 2) return undefined;
+
+  var month = monthDay[0];
+  var day = monthDay[1];
+  var weekday = dateComponents[1];
+
+  var correctYearDate = undefined;
+
+  for(var testYear = jobCreateYear; testYear < jobCreateYear+10; testYear++) {
+    var date = new Date();
+    date.setFullYear(testYear);
+    date.setMonth(month-1);
+    date.setDate(day);
+
+    var weekdayIndex = date.getDay();
+    var testWeekday = ['MON','TUE','WED','THU','FRI','SAT','SUN'][weekdayIndex-1];
+    if (testWeekday === weekday) {
+      correctYearDate = date;
+      break;
+    }
+  }
+
+  if (correctYearDate !== undefined) {
+    var timeframe = translateTimeframe(dateComponents[2]);
+    if (timeframe) {
+      correctYearDate.setHours(timeframe.start);
+    }
+    correctYearDate.setMinutes(0);
+    correctYearDate.setSeconds(0);
+    correctYearDate.setMilliseconds(0);
+  }
+  return correctYearDate;
+}
+
+
 function translateApptFromRW(data) {
+  var jobs = (data.Wip || []).map(function(wip) {
+    return translateJobFromRW(wip);
+  });
+
+  var date = translateDate(data.DtTm);
+
   return {
     id: data.SdmID,
     jobID: data.Inv,
     name: data.Nm,
     phone: data.Tel,
     city: data.City,
-    time: data.DtTm,
+    time: formatDateSane(date),
     tech: data.AssndTch,
     original: data,
+    job: jobs[0] || {},
   };
 }
 
@@ -67,16 +150,27 @@ function stringStatus(statusNumber) {
   return JobStatStrings[statusIndex-1];
 }
 
+function translateName(incoming) {
+  if (!incoming) return incoming;
+  return upperAllFirst(incoming.split(',').reverse().join(' '));
+}
+
+function translateAddressLine(incoming) {
+  if (!incoming) return incoming;
+  return upperAllFirst(incoming).split('[')[0];
+}
+
 function translateJobFromRW(data) {
+  if (!data) data = {};
   var appts = (data.Schd || []).map(function(schd) {
     return translateApptFromRW(schd);
   });
 
   return {
     customer: {
-      name: data.CstmrNm,
-      address: data.CstmrAddrs,
-      address2: data.CstmrCty,
+      name: translateName(data.CstmrNm),
+      address: translateAddressLine(data.CstmrAddrs),
+      address2: translateAddressLine(data.CstmrCty),
       phone1: data.CstmrTel1,
       phone2: data.CstmrTel2,
       phone3: data.CstmrTel3,
@@ -86,9 +180,9 @@ function translateJobFromRW(data) {
       email: data.CstmrEmail,
     },
     location: {
-      name: data.LctnNm,
-      address: data.LctnAddrs,
-      address2: data.LctnCty,
+      name: translateName(data.LctnNm),
+      address: translateAddressLine(data.LctnAddrs),
+      address2: translateAddressLine(data.LctnCty),
       phone1: data.LctnTel1,
       phone2: data.LctnTel2,
       phone3: data.LctnTel3,
