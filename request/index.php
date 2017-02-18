@@ -38,7 +38,7 @@
     public $type = '';
     public $id = '';
     public $idlabel = '';
-    public $limit = 100;
+    public $limit = null;
     public $sortby = '';
     public $filters = array();
     public $page = 0;
@@ -120,19 +120,19 @@
       $qrey =  "SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = '$addName'";
       $res = executeConf($this->db, $qrey);
       if ($res === false || count($res) === 0) {
-        $qrey = "CREATE TRIGGER $addName AFTER INSERT ON $escapedName FOR EACH ROW INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (NEW." . $escapedKey . ", '$escapedName', 'INSERT', NEW.OrganizationID, $escapedKey);";
+        $qrey = "CREATE TRIGGER $addName AFTER INSERT ON $escapedName FOR EACH ROW INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (NEW." . $escapedKey . ", '$escapedName', 'INSERT', NEW.OrganizationID, '$escapedKey');";
         $ares = executeConf($this->db, $qrey);
       }
       $qrey =  "SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = '$updateName'";
       $res = executeConf($this->db, $qrey);
       if ($res === false || count($res) === 0) {
-        $qrey = "CREATE TRIGGER $updateName AFTER UPDATE ON $escapedName FOR EACH ROW INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (NEW." . $escapedKey . ", '$escapedName', 'UPDATE', NEW.OrganizationID, $escapedKey);";
+        $qrey = "CREATE TRIGGER $updateName AFTER UPDATE ON $escapedName FOR EACH ROW INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (NEW." . $escapedKey . ", '$escapedName', 'UPDATE', NEW.OrganizationID, '$escapedKey');";
         $ures = executeConf($this->db, $qrey);
       }
       $qrey =  "SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = '$deleteName'";
       $res = executeConf($this->db, $qrey);
       if ($res === false || count($res) === 0) {
-        $qrey = "CREATE TRIGGER $deleteName AFTER DELETE ON $escapedName FOR EACH ROW  INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (OLD." . $escapedKey . ", '$escapedName', 'DELETE', OLD.OrganizationID, $escapedKey);";
+        $qrey = "CREATE TRIGGER $deleteName AFTER DELETE ON $escapedName FOR EACH ROW  INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (OLD." . $escapedKey . ", '$escapedName', 'DELETE', OLD.OrganizationID, '$escapedKey');";
         $dres = executeConf($this->db, $qrey);
       }
     }
@@ -225,7 +225,7 @@
         $joins = isset($this->joins)&&is_array($this->joins)?$this->joins:array();
         $sortby = isset($this->sortby)?$this->sortby:array(); //['id'=>'DESC']
         $page = isset($this->page)?$this->page:0;
-        $pagesize = isset($this->limit)?$this->limit:0;
+        $pagesize = $this->limit;
         $table = escapeIdentifierConf($this->db, $this->type);
 
         if (isset($this->auth) && isset($this->auth['org'])) array_push($filters, array('sub' => "$table.organizationID", 'verb' => 'eq', 'obj' => $this->auth['org']));
@@ -419,35 +419,37 @@
     }
 
     public function requestEncoded($encoded) {
-      if (isset($encoded['verb']))
+      if (array_key_exists('verb', $encoded))
         $this->verb = $encoded['verb'];
-      if (isset($encoded['data']))
+      if (array_key_exists('data', $encoded))
         $this->data = $encoded['data'];
-      if (isset($encoded['type']))
+      if (array_key_exists('type', $encoded))
         $this->type = $encoded['type'];
-      if (isset($encoded['id']))
+      if (array_key_exists('id', $encoded))
         $this->id = $encoded['id'];
-      if (isset($encoded['idlabel']))
+      if (array_key_exists('idlabel', $encoded))
         $this->idlabel = $encoded['idlabel'];
-      if (isset($encoded['limit']))
+      if (array_key_exists('limit', $encoded))
         $this->limit = $encoded['limit'];
-      if (isset($encoded['links']))
+      else
+        $this->limit = 100;
+      if (array_key_exists('links', $encoded))
         $this->links = $encoded['links'];
-      if (isset($encoded['sortby']))
+      if (array_key_exists('sortby', $encoded))
         $this->sortby = $encoded['sortby'];
-      if (isset($encoded['filters']))
+      if (array_key_exists('filters', $encoded))
         $this->filters = $encoded['filters'];
-      if (isset($encoded['joins']))
+      if (array_key_exists('joins', $encoded))
         $this->joins = $encoded['joins'];
-      if (isset($encoded['page']))
+      if (array_key_exists('page', $encoded))
         $this->page = $encoded['page'];
-      if (isset($encoded['database']))
+      if (array_key_exists('database', $encoded))
         $this->database = $encoded['database'];
-      if (isset($encoded['query']))
+      if (array_key_exists('query', $encoded))
         $this->query = $encoded['query'];
-      if (isset($encoded['username']))
+      if (array_key_exists('username', $encoded))
         $this->username = $encoded['username'];
-      if (isset($encoded['password']))
+      if (array_key_exists('password', $encoded))
         $this->password = $encoded['password'];
 
       if ($this->authenticate()) {

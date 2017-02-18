@@ -119,6 +119,7 @@ Data.prototype.loadFeed = function() {
           document.dispatchEvent(event);
           var specificEvent = new CustomEvent(item.tableName + '.' + item.verb, { 'detail': item });
           document.dispatchEvent(specificEvent);
+          that.feed.push(item);
         });
       }
       that.timeoutHandle = setTimeout(that.loadFeed, that.timeoutTime);
@@ -129,4 +130,8 @@ Data.prototype.loadFeed = function() {
   }
 }
 
-window.DataFeed = window.DataFeed ? window.DataFeed : new Data();
+Data.prototype.getFeed = function() {
+  return this.feed;
+}
+
+window.dataFeed = window.dataFeed ? window.dataFeed : new Data();

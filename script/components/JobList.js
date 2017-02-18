@@ -4,12 +4,23 @@ var JobList = function(parent, props) {
   this.view = spawn('div', parent, { className: 'jobListView' });
 
   this.list = new ListView(this.view, { getDataCallback: this.getJobs, getCountCallback: this.countJobs, limit: 20 });
+
+  document.addEventListener("Wip.UPDATE", function(e) {
+    var item = e.detail;
+    // that.requestJob(item);
+    if (item.tableID in that.jobMap) {
+      that.jobMap[item.tableID].style.backgroundColor = '#f00';
+      that.list.getData();
+    }
+  });
+  this.jobMap = {};
 }
 
 JobList.prototype.getJobs = function(limit, page) {
   var that = this;
   return new Promise(function(resolve, reject){
     list('Wip', limit, page, null, jobLinks, [{ col: 'INV', direction: 'DESC' }]).then(function(data){
+      that.jobMap = {};
       var children = data.RESULTS.map(function(job){
         var passData = translateJobFromRW(job);
         console.log('passdata', passData);
@@ -28,7 +39,7 @@ JobList.prototype.getJobs = function(limit, page) {
         }
         // passData.schedule.appts.length
 
-        return spawn('div', null, { className: 'jobLineItem', style: { height: '80px', marginBottom: '5px', borderLeft: '5px solid ' + borderColor }, onclick: function(){that.showJob(passData);}}, [
+        var ret = spawn('div', null, { className: 'jobLineItem', style: { height: '80px', marginBottom: '5px', borderLeft: '5px solid ' + borderColor }, onclick: function(){that.showJob(passData);}}, [
           spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch' } }, [
             spawn('div', null, {style: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}, [
               spawn('span', null, { style: { flex: '4', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, passData.location.name || passData.customer.name),
@@ -45,6 +56,8 @@ JobList.prototype.getJobs = function(limit, page) {
             ]),
           ]),
         ]);
+        that.jobMap[passData.id]=ret;
+        return ret;
       }) || [];
       resolve(children);
     });
