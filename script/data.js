@@ -76,3 +76,57 @@ var jobLinks = [
 var apptLinks = [
   {table: 'Wip', tableColumn: 'Inv', parentColumn: 'Inv'},
 ];
+
+function forceStringSize(str, size, padding, before) {
+  if (str.length > size) return str.slice(4);
+  else if (str.length === size) return str;
+  else if (before) {
+    return padding.repeat(size - str.length) + str;
+  } else {
+    return str + padding.repeat(size - str.length);
+  }
+}
+function zeroAlign(num, size) {
+  return forceStringSize(''+num, size, '0', true);
+}
+function formatDate9075(date) {
+  return zeroAlign(date.getFullYear(), 4) + "-" + zeroAlign(date.getMonth() + 1, 2) + "-" + zeroAlign(date.getDate(), 2) + ' ' + zeroAlign(date.getHours(), 2) + ':' + zeroAlign(date.getMinutes(), 2) + ':' + zeroAlign(date.getSeconds(), 2);
+}
+
+function Data() {
+  var that = me(this);
+  this.feed = [];
+  this.lastUpdate = new Date();
+  this.lastUpdate.setHours(0);
+  this.lastUpdate.setMinutes(0);
+  this.lastUpdate.setSeconds(0);
+  this.timeoutTime = 5000;
+  this.loadFeed();
+}
+
+Data.prototype.makeSyncFilters = function() {
+  return [{sub: 'updated_at', verb: 'gteq', obj: formatDate9075(this.lastUpdate)}];
+}
+
+Data.prototype.loadFeed = function() {
+  var that = this;
+  if(window.settings && window.settings.username) {
+    list('sync', null, null, null, null, null, this.makeSyncFilters()).then(function(data){
+      if (data.SUCCESS && data.RESULTS) {
+        var list = data.RESULTS;
+        list.forEach(function(item){
+          var event = new CustomEvent('dataChange', { 'detail': item });
+          document.dispatchEvent(event);
+          var specificEvent = new CustomEvent(item.tableName + '.' + item.verb, { 'detail': item });
+          document.dispatchEvent(specificEvent);
+        });
+      }
+      that.timeoutHandle = setTimeout(that.loadFeed, that.timeoutTime);
+    });
+    this.lastUpdate = new Date();
+  } else {
+    that.timeoutHandle = setTimeout(that.loadFeed, 50);
+  }
+}
+
+window.DataFeed = window.DataFeed ? window.DataFeed : new Data();

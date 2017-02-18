@@ -110,6 +110,33 @@
       return executeConf($this->db, $qrey);
     }
 
+    public function createTableTriggers($tableName, $primaryKey) {
+      $escapedName = escapeIdentifierConf($this->db, $tableName);
+      $escapedKey = escapeIdentifierConf($this->db, $primaryKey);
+      $addName = $escapedName . '_add';
+      $updateName = $escapedName . '_update';
+      $deleteName = $escapedName . '_delete';
+
+      $qrey =  "SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = '$addName'";
+      $res = executeConf($this->db, $qrey);
+      if ($res === false || count($res) === 0) {
+        $qrey = "CREATE TRIGGER $addName AFTER INSERT ON $escapedName FOR EACH ROW INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (NEW." . $escapedKey . ", '$escapedName', 'INSERT', NEW.OrganizationID, $escapedKey);";
+        $ares = executeConf($this->db, $qrey);
+      }
+      $qrey =  "SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = '$updateName'";
+      $res = executeConf($this->db, $qrey);
+      if ($res === false || count($res) === 0) {
+        $qrey = "CREATE TRIGGER $updateName AFTER UPDATE ON $escapedName FOR EACH ROW INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (NEW." . $escapedKey . ", '$escapedName', 'UPDATE', NEW.OrganizationID, $escapedKey);";
+        $ures = executeConf($this->db, $qrey);
+      }
+      $qrey =  "SELECT * FROM INFORMATION_SCHEMA.TRIGGERS WHERE TRIGGER_NAME = '$deleteName'";
+      $res = executeConf($this->db, $qrey);
+      if ($res === false || count($res) === 0) {
+        $qrey = "CREATE TRIGGER $deleteName AFTER DELETE ON $escapedName FOR EACH ROW  INSERT INTO sync (tableID, tableName, verb, organizationID, tableIDField) VALUES (OLD." . $escapedKey . ", '$escapedName', 'DELETE', OLD.OrganizationID, $escapedKey);";
+        $dres = executeConf($this->db, $qrey);
+      }
+    }
+
     public function authenticate() {
       global $credtable, $creduser, $credpass, $credorg, $credid, $credseclevel;
       if (isset($credtable) && isset($creduser) && isset($credpass) && isset($credorg) && isset($credid)){
@@ -338,6 +365,9 @@
               $ires = executeConf($this->db, $adddexqrey);
               $this->results[$table]["indexes"][$col]=$ires;
             }
+          }
+          if (!isset($fieldlist["noTriggers"]) || $fieldlist["noTriggers"]){
+            $this->createTableTriggers($table, $fieldlist["keyname"]);
           }
           $this->success=$res !== false && $res !== null;
         }

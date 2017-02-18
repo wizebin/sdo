@@ -310,7 +310,7 @@ function listIndexedMSSQL($db, $table){
 }
 
 
-$verbMap = array('eq'=>'=','not_eq'=>'!=','lt'=>'<','gt'=>'>','gteq'=>'>=','lteq'=>'<=');
+$verbMap = array('eq'=>'=','not_eq'=>'!=','lt'=>'<','gt'=>'>','gteq'=>'>=','lteq'=>'<=','gt_eq'=>'>=','lt_eq'=>'<=');
 $valModifyingVerbMap = array('cont'=>'LIKE','start'=>'LIKE','end'=>'LIKE','i_cont'=>'ILIKE');//ilike only works with postgresql
 $specialVerbMap = array('present','blank','null','not_null');
 function getFilterFromDataMYPGSQL($db, $unescapedcol, $word, $unescapedval, $ismysql){
