@@ -9,7 +9,7 @@ function HomeView(parent, props) {
     ]),
     this.scheduleList = new ScheduleList(null, { prefilters: this.makeFiltersForSchedule(), limit: 20 }),
   ]);
-  this.secondView = spawn('div', this.view, { style: { flex: '0 0 200px', fontSize: '12px', height: '100%', overflow: 'auto', backgroundColor: '#fff', marginLeft: '4px' } }, [
+  this.secondView = spawn('div', this.view, { style: { flex: '0 0 200px', fontSize: '12px', height: '100%', overflow: 'auto', backgroundColor: '#fff', marginLeft: '2px' } }, [
     new LiveFeedView(),
   ]);
 

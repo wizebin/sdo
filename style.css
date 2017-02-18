@@ -64,13 +64,13 @@ button:active{
   justify-content: space-between;
   align-items: stretch;
   background-color: #eaeaea;
-  border-bottom: 4px solid #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
 }
 .leftWrapper {
   overflow: hidden;
   max-width: 320px;
   transition: max-width 200ms;
-  border-right: 5px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
   flex: 0 0 180px;
   height: 100%;
 }
