@@ -23,7 +23,7 @@ LiveFeedView.prototype.addItem = function(item) {
   } else if (item.verb === 'DELETE') {
     relevantSvg = new MinusSvg(null, { style: { width: '16px', height: '16px', color: '#ffaaaa' } });
   }
-  var el = spawn('div', null, { className: 'liveFeedLineItem', style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch', height: '42px' }, onclick:function(){that.clickedItem(item)} }, [
+  var el = spawn('div', null, { className: 'liveFeedLineItem', style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch', height: '42px', padding: '5px' }, onclick:function(){that.clickedItem(item)} }, [
     spawn('div', null, {style: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}, [
       relevantSvg,
       spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'left', color: '#999' } }, item.tableName),

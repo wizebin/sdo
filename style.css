@@ -58,7 +58,7 @@ button:active{
   flex-direction: column;
 }
 .topView {
-  flex: 0 0 60px;
+  flex: 0 0 48px;
   display: flex;
   z-index: 1;
   justify-content: space-between;
@@ -303,15 +303,14 @@ button:active{
   top: 0px;
 }
 .listViewNavHeader {
-  padding: 10px;
+  padding: 4px;
   background-color: #fff;
   opacity: .8;
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-  margin-top: 10px;
   align-items: center;
-  border-bottom: 2px solid #aaa;
+  border-bottom: 1px solid #aaa;
 }
 .apptLineItem {
   font-size: 12px;

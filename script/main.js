@@ -1,7 +1,7 @@
 var App = function(parent) {
   var that = me(this);
   this.view = spawn('div', parent, { className: 'app', style: {} });
-  this.topView = spawn('div', this.view, { className: 'topView', style: { flex: '0 0 60px', display: 'flex', zIndex: '1', justifyContent: 'space-between', alignItems: 'stretch' } });
+  this.topView = spawn('div', this.view, { className: 'topView' });
   this.mainView = spawn('div', this.view, { className: 'mainWrapper', style: { flex: '1', display: 'flex' } });
   this.leftView = spawn('div', this.mainView, { className: 'leftWrapper' });
   this.leftWrapper = spawn('div', this.leftView, { className: 'leftWrapperWrapper' });
