@@ -6,10 +6,10 @@ var SidePanel = function(parent, props) {
       this.homeButton = spawn('div', null, { className: 'navButton', onclick: function(){ that.nav('Home') } }, [new HomeSvg(), spawn('span', null, { style: { marginTop: '5px' } }, 'Home')]),
       this.jobListButton = spawn('div', null, { className: 'navButton', onclick: function(){ that.nav('Jobs') } }, [new WrenchSvg(), spawn('span', null, { style: { marginTop: '5px' } }, 'Job List')]),
     ]),
-    // spawn('div', null, { className: 'sideSvgButton', style: { display: 'flex', flexDirection: 'row' } }, [
+    spawn('div', null, { className: 'sideSvgButton', style: { display: 'flex', flexDirection: 'row' } }, [
       // this.callsheetButton = spawn('div', null, { className: 'navButton', onclick: function(){ that.nav('Callsheets') } }, [new CallsheetSvg(), spawn('span', null, { style: { marginTop: '5px' } }, 'Callsheets')]),
 
-    // ]),
+    ]),
     spawn('div', null, { className: 'sideSvgButton', style: { display: 'flex', flexDirection: 'row' } }, [
       this.rolodexButton = spawn('div', null, { className: 'navButton', onclick: function(){ that.nav('Rolodex') } }, [new RolodexSvg(), spawn('span', null, { style: { marginTop: '5px' } }, 'Rolodex')]),
       this.partsListButton = spawn('div', null, { className: 'navButton', onclick: function(){ that.nav('Parts') } }, [new TruckSvg(), spawn('span', null, { style: { marginTop: '5px' } }, 'Parts')]),

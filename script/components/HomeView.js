@@ -9,7 +9,7 @@ function HomeView(parent, props) {
     ]),
     this.scheduleList = new ScheduleList(null, { prefilters: this.makeFiltersForSchedule(), limit: 20 }),
   ]);
-  this.secondView = spawn('div', this.view, { style: { flex: '0 0 200px', fontSize: '12px', height: '100%', overflow: 'auto', backgroundColor: '#fff', marginLeft: '2px' } }, [
+  this.secondView = spawn('div', this.view, { style: { flex: '0 0 300px', fontSize: '12px', height: '100%', overflow: 'auto', backgroundColor: '#fff', marginLeft: '2px' } }, [
     new LiveFeedView(),
   ]);
 
@@ -27,13 +27,8 @@ HomeView.prototype.triggerTechChange = function() {
   this.scheduleList.reload();
 }
 
-HomeView.prototype.getTodayFilterString = function() {
-  var date = new Date();
-  return '' + (date.getMonth()+1) + '/' + date.getDate() + ' ' + ['MON','TUE','WED','THU','FRI','SAT','SUN'][date.getDay()-1];
-}
-
 HomeView.prototype.makeFiltersForSchedule = function() {
-  var ret = [{ sub: 'DtTm', verb: 'start', obj: this.getTodayFilterString() }];
+  var ret = [{ sub: 'DtTm', verb: 'start', obj: getFilterStringForDate(new Date()) }];
   var tech = this.getSelectedTech();
   if (tech) {
     ret.push({ sub: 'AssndTch', verb: 'eq', obj: tech.TwoLttrCd });

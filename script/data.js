@@ -77,6 +77,10 @@ var apptLinks = [
   {table: 'Wip', tableColumn: 'Inv', parentColumn: 'Inv'},
 ];
 
+getFilterStringForDate = function(date) {
+  return '' + (date.getMonth()+1) + '/' + date.getDate() + ' ' + ['MON','TUE','WED','THU','FRI','SAT','SUN'][date.getDay()-1];
+}
+
 function forceStringSize(str, size, padding, before) {
   if (str.length > size) return str.slice(4);
   else if (str.length === size) return str;
@@ -102,6 +106,7 @@ function Data() {
   this.lastUpdate.setSeconds(0);
   this.timeoutTime = 5000;
   this.loadFeed();
+  this.data = {};
 }
 
 Data.prototype.makeSyncFilters = function() {
@@ -128,6 +133,43 @@ Data.prototype.loadFeed = function() {
   } else {
     that.timeoutHandle = setTimeout(that.loadFeed, 50);
   }
+}
+
+Data.prototype.request = function(table, filters) {
+  var that = this;
+  return new Promise(function(resolve, reject){
+    list(table, null, null, null, null, null, filters).then(function(data){
+      if (data.SUCCESS) {
+        that.data[table.toLowerCase()] = data.RESULTS;
+        resolve(data.RESULTS);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+}
+
+Data.prototype.loadBasicData = function() {
+  var that = this;
+  list('Techs').then(function(data){
+    if (data.SUCCESS) {
+      that.data.techs = data.RESULTS.sort(function(a,b){
+        if (a.TechName < b.TechName) return -1;
+        else if (a.TechName > b.TechName) return 1;
+        return 0;
+      });
+    }
+  });
+  tables().then(function(data){
+    if (data.SUCCESS) {
+      that.data.tables = data.RESULTS;
+    }
+  });
+  list('Organizations').then(function(data){
+    if (data.SUCCESS) {
+      that.data.orgs = data.RESULTS;
+    }
+  });
 }
 
 Data.prototype.getFeed = function() {

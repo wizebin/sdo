@@ -34,7 +34,7 @@ ScheduleList.prototype.getAppts = function(limit, page, filters, sorts) {
           spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch' } }, [
             spawn('div', null, { style: { display: 'flex', justifyContent: 'space-between' } }, [
               spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', } }, [
-                spawn('span', null, { style: { fontWeight: 'bold' } }, passData.time),
+                spawn('span', null, { style: { fontWeight: 'normal' } }, passData.time),
                 spawn('span', null, { style: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, location.name),
               ]),
               spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'right', color: '#999' } }, passData.jobID),
@@ -42,7 +42,7 @@ ScheduleList.prototype.getAppts = function(limit, page, filters, sorts) {
             spawn('div', null, { style: { display: 'flex', justifyContent: 'space-between' } }, [
               spawn('span', null, { style: { flex: '6', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, location.address + ', ' + location.address2 ),
               spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'right' } }, passData.job.status),
-              spawn('span', null, { style: { flex: '0 0 15px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'right', fontWeight: 'bold' } }, passData.tech),
+              spawn('span', null, { style: { flex: '0 0 15px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'right', fontWeight: 'normal' } }, passData.tech),
             ]),
           ]),
         ]);

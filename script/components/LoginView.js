@@ -27,6 +27,8 @@ LoginView.prototype.login = function(noLoginError) {
       settings.userID = data.AUTH.id;
       settings.securityLevel = data.AUTH.seclevel;
 
+      window.dataFeed.loadBasicData();
+
       that.errorContainer.innerHTML = '';
       setElementContentWithScripts(document.getElementById('app'), data['RESULTS']);
     } else {

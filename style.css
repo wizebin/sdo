@@ -1,20 +1,9 @@
-@font-face {
-  font-family: 'RobotoLight';
-  src: url('./fonts/Roboto-Light.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'RobotoThin';
-  src: url('./fonts/Roboto-Thin.ttf') format('truetype');
-  font-weight: thin;
-  font-style: normal;
-}
 html, body{
   height: 100%;
   background-color:#eee;
-  font-family: "RobotoLight", "lucida grande", tahoma, verdana, arial, sans-serif;
+  font-family: "Roboto", "lucida grande", tahoma, verdana, arial, sans-serif;
   fill: currentColor;
+  font-weight: 200;
 }
 html, body, div, input, textarea {
   position: relative;
@@ -380,4 +369,11 @@ button:active{
 }
 .sideSvgButton {
   max-height: 64px;
+}
+.barGraphDiv {
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -ms-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
 }

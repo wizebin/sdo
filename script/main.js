@@ -80,7 +80,7 @@ App.prototype.navString = function(hashed) {
     if (parts[0] === 'Map') this.content.replaceView(new MapView());
     if (parts[0] === 'Parts') this.content.replaceView(new PartsList());
     if (parts[0] === 'Rolodex') this.content.replaceView(new Rolodex());
-    if (parts[0] === 'Reports') this.content.replaceView(new ReportsView());
+    if (parts[0] === 'Reports') this.content.replaceView(new WorkloadView());
     if (parts[0] === 'Messages') this.content.replaceView(new MessageList());
     if (parts[0] === 'Debug List') this.content.replaceView(new GenericList());
   } else if (parts.length >= 2){
