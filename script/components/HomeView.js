@@ -3,7 +3,7 @@ function HomeView(parent, props) {
   this.view = spawn('div', parent, { style: { display: 'flex', height: '100%' } });
 
   this.firstView = spawn('div', this.view, { style: { flex: '1', height: '100%', overflow: 'auto', backgroundColor: '#fff' } }, [
-    spawn('div', null, { style: { padding: '5px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #333' }}, [
+    spawn('div', null, { style: { height: '30px', padding: '0px 5px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}, [
       spawn('span', null, {}, "Today's appointment list"),
       this.techSelect = spawn('select', null, { onchange: function(){that.triggerTechChange()} }),
     ]),

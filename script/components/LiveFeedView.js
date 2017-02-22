@@ -1,16 +1,28 @@
 function LiveFeedView(parent, props) {
   var that = me(this);
-  this.view = spawn('div', parent, { style: { height: '100%' } });
+  this.view = spawn('div', parent, { style: { height: '100%', display: 'flex', flexDirection: 'column' } });
 
-  this.liveFeed = spawn('div', this.view, { style: { height: '100%', overflow: 'auto' } });
+  this.feedSize = 20;
+  this.header = spawn('div', this.view, { className: 'liveHeader', style: { flex: '0 0 30px', padding: '0px 5px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #888' } }, [
+    this.title = spawn('span', null, {}, 'Live Data Feed'),
+    spawn('span', null, {}, [
+      spawn('span', null, { style: { color: '#888' } }, 'Last Updated '),
+      this.lastUpdateTime = spawn('span'),
+    ]),
+  ]);
+  this.liveFeed = spawn('div', this.view, { style: { flex: '1', overflow: 'auto' } });
 
   document.addEventListener("dataChange", function(e) {
     var item = e.detail;
     that.addItem(item);
   });
 
+  document.addEventListener("sync", function(e) {
+    that.lastUpdateTime.innerHTML = formatDateSane(new Date());
+  });
+
   var curFeed = window.dataFeed ? window.dataFeed.getFeed() : [];
-  curFeed.forEach(function(item){that.addItem(item);});
+  curFeed.slice(-this.feedSize).forEach(function(item){that.addItem(item);});
 }
 
 LiveFeedView.prototype.addItem = function(item) {
@@ -33,7 +45,10 @@ LiveFeedView.prototype.addItem = function(item) {
       ]),
     ]),
   ]);
-  prependElement(that.liveFeed, el);
+  prependElement(this.liveFeed, el);
+  while (this.liveFeed.children.length > this.feedSize && this.feedSize > 0) {
+    this.liveFeed.removeChild(this.liveFeed.children[this.liveFeed.children.length - 1]);
+  }
 }
 
 LiveFeedView.prototype.clickedItem = function(item) {

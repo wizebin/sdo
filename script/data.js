@@ -101,7 +101,7 @@ function Data() {
   var that = me(this);
   this.feed = [];
   this.lastUpdate = new Date();
-  this.lastUpdate.setHours(0);
+  this.lastUpdate.setHours(this.lastUpdate.getHours() - 1);
   this.lastUpdate.setMinutes(0);
   this.lastUpdate.setSeconds(0);
   this.timeoutTime = 5000;
@@ -116,7 +116,9 @@ Data.prototype.makeSyncFilters = function() {
 Data.prototype.loadFeed = function() {
   var that = this;
   if(window.settings && window.settings.username) {
-    list('sync', null, null, null, null, null, this.makeSyncFilters()).then(function(data){
+    list('sync', null, null, null, null, [{col: 'id', direction: 'ASC'}], this.makeSyncFilters()).then(function(data){
+      var checkEvent = new CustomEvent('sync', { 'detail': data.RESULTS });
+      document.dispatchEvent(checkEvent);
       if (data.SUCCESS && data.RESULTS) {
         var list = data.RESULTS;
         list.forEach(function(item){
@@ -128,7 +130,7 @@ Data.prototype.loadFeed = function() {
         });
       }
       that.timeoutHandle = setTimeout(that.loadFeed, that.timeoutTime);
-    });
+    }).catch(function(data){that.timeoutHandle = setTimeout(that.loadFeed, that.timeoutTime);});
     this.lastUpdate = new Date();
   } else {
     that.timeoutHandle = setTimeout(that.loadFeed, 50);
