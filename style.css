@@ -3,7 +3,7 @@ html, body{
   background-color:#eee;
   font-family: "Roboto", "lucida grande", tahoma, verdana, arial, sans-serif;
   fill: currentColor;
-  font-weight: 200;
+  font-weight: normal;
 }
 html, body, div, input, textarea {
   position: relative;
@@ -306,11 +306,12 @@ button:active{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 5px;
+  padding: 4px 5px;
   border-bottom: 1px solid #555;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   margin-left: 5px;
   margin-right: 5px;
+  height: 75px;
 }
 .liveFeedLineItem {
   padding: '5px';
@@ -376,4 +377,50 @@ button:active{
   -ms-transition: all 400ms ease-in-out;
   -o-transition: all 400ms ease-in-out;
   transition: all 400ms ease-in-out;
+}
+.workTypeBox {
+  display: flex;
+  width: 250px;
+  height: 180px;
+  padding: 10px;
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  margin: 10px;
+}
+.paymentOptionDiv {
+  padding: 10px;
+  background-color: #ccc;
+  margin-bottom: 15px;
+  border-left: 1px solid #aaa;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+}
+.paymentOptionDiv:last-child {
+  margin-bottom: 0px;
+}
+
+.basicButton {
+  background-color: transparent;
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+  color: #555;
+  font-size: 12px;
+  align-items: center;
+  border: 1px solid #555;
+  border-radius: 2px;
+  border-color: currentColor;
+  white-space: nowrap;
+}
+.basicButton:hover {
+  cursor: pointer;
+  color: #00a8ff;
+}
+.basicButton > svg{
+  min-width: 24px;
+  min-height: 24px;
+  margin: 0px 5px;
+}
+.basicButton > *{
+  flex: 1;
 }

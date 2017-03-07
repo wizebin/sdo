@@ -101,7 +101,7 @@ function Data() {
   var that = me(this);
   this.feed = [];
   this.lastUpdate = new Date();
-  this.lastUpdate.setHours(this.lastUpdate.getHours() - 1);
+  this.lastUpdate.setHours(this.lastUpdate.getHours() - 24);
   this.lastUpdate.setMinutes(0);
   this.lastUpdate.setSeconds(0);
   this.timeoutTime = 5000;
@@ -121,6 +121,12 @@ Data.prototype.loadFeed = function() {
       document.dispatchEvent(checkEvent);
       if (data.SUCCESS && data.RESULTS) {
         var list = data.RESULTS;
+
+        if (list.length > 0) {
+          var listEvent = new CustomEvent('listChange', { 'detail': list });
+          document.dispatchEvent(listEvent);
+        }
+
         list.forEach(function(item){
           var event = new CustomEvent('dataChange', { 'detail': item });
           document.dispatchEvent(event);

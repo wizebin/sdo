@@ -13,7 +13,6 @@ PartsList.prototype.getParts = function(limit, page) {
     list('IList', limit, page).then(function(data){
       if (data.SUCCESS) {
         var children = data.RESULTS.map(function(passData){
-          console.log('passData', passData);
           return spawn('div', null, { className: 'lineItem', style: { height: '40px', marginBottom: '5px' }, onclick: function(){that.showPart(passData);}}, [
             spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch', maxWidth: '100%', overflow: 'hidden' } }, [
               spawn('div', null, {style: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}, [

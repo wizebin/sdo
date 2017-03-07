@@ -23,7 +23,6 @@ JobList.prototype.getJobs = function(limit, page) {
       that.jobMap = {};
       var children = data.RESULTS.map(function(job){
         var passData = translateJobFromRW(job);
-        console.log('passdata', passData);
         var borderColor = borderColorForStatus(passData.status);
         var apptString = '';
         var techString = '';

@@ -30,11 +30,11 @@ ScheduleList.prototype.getAppts = function(limit, page, filters, sorts) {
             location = passData.job.customer;
           }
         }
-        return spawn('div', null, { className: 'apptLineItem', style: { height: '60px', marginBottom: '5px' }, onclick: function(){that.showJob(passData.jobID);}}, [
+        return spawn('div', null, { className: 'apptLineItem', style: { }, onclick: function(){that.showJob(passData.jobID);}}, [
           spawn('div', null, { style: { flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignSelf: 'stretch' } }, [
             spawn('div', null, { style: { display: 'flex', justifyContent: 'space-between' } }, [
               spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', } }, [
-                spawn('span', null, { style: { fontWeight: 'normal' } }, passData.time),
+                spawn('span', null, { style: { fontWeight: 'bold' } }, passData.time),
                 spawn('span', null, { style: { textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px' } }, location.name),
               ]),
               spawn('span', null, { style: { flex: '2', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginLeft: '5px', marginRight: '5px', textAlign: 'right', color: '#999' } }, passData.jobID),

@@ -6,6 +6,10 @@ function isObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
+function isFunc(obj) {
+  return Object.prototype.toString.call(obj) === '[object Function]'
+}
+
 function isNode(o){
   return (typeof Node === "object" ? o instanceof Node :
     o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string");
@@ -103,10 +107,20 @@ function applyChildrenToElement(el, children) {
 }
 
 function spawn(element, parent, props, children) {
-  var el = document.createElement(element);
+  var el = null;
+  if (isString(element)) {
+    el = document.createElement(element);
+    adopt(parent, el);
+    applyChildrenToElement(el, children);
+  } else if (isFunc(element)) {
+    el = new element(parent, props);
+    if (el && el.view) {
+      applyChildrenToElement(el.view, children);
+    }
+  } else {
+    return null;
+  }
   applyPropsToElement(el, props);
-  adopt(parent, el);
-  applyChildrenToElement(el, children);
   return el;
 }
 

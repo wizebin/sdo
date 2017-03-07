@@ -12,9 +12,14 @@ function LiveFeedView(parent, props) {
   ]);
   this.liveFeed = spawn('div', this.view, { style: { flex: '1', overflow: 'auto' } });
 
-  document.addEventListener("dataChange", function(e) {
-    var item = e.detail;
-    that.addItem(item);
+  document.addEventListener("listChange", function(e) {
+    console.log('list change', e);
+    var list = e.detail;
+    if (list && list.length > 0) {
+      list.slice(-that.feedSize).forEach(function(item){
+        that.addItem(item);
+      });
+    }
   });
 
   document.addEventListener("sync", function(e) {

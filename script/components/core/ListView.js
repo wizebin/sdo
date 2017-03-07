@@ -5,7 +5,10 @@ var ListView = function(parent, props) {
 
   if (!props.hideHeader) {
     this.navheader = spawn('div', this.view, { className: 'listViewNavHeader' }, [
-      spawn('button', null, {}, 'filter'),
+      // spawn('button', null, {}, 'filter'),
+      // spawn(Button, null, {}, [spawn(FilterSvg), spawn('span', null, {}, 'Filter')]),
+      spawn(Button, null, { onclick: that.getData }, [spawn(RefreshSvg), spawn('span', null, {}, 'Refresh')]),
+      // spawn(Button, null, {}, [spawn(PlusSvg), spawn('span', null, {}, 'Add Item')]),
       that.status = spawn('span', null, {}),
       spawn('div', null, {}, [
         that.firstButton = spawn('button', null, { className: 'paginateButton', onclick: that.firstPage }, 'first'),

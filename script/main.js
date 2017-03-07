@@ -83,6 +83,7 @@ App.prototype.navString = function(hashed) {
     if (parts[0] === 'Reports') this.content.replaceView(new WorkloadView());
     if (parts[0] === 'Messages') this.content.replaceView(new MessageList());
     if (parts[0] === 'Debug List') this.content.replaceView(new GenericList());
+    if (parts[0] === 'Test') this.content.replaceView(new LsaSignupView());
   } else if (parts.length >= 2){
     var display = this.content.activeChild;
     if (parts[0] === 'Job') display = new JobView();
