@@ -10,17 +10,17 @@ function isFunc(obj) {
   return Object.prototype.toString.call(obj) === '[object Function]'
 }
 
-function isNode(o){
+function isNode(o) {
   return (typeof Node === "object" ? o instanceof Node :
     o && typeof o === "object" && typeof o.nodeType === "number" && typeof o.nodeName==="string");
 }
 
-function isElement(o){
+function isElement(o) {
   return (typeof HTMLElement === "object" ? o instanceof HTMLElement : //DOM2
     o && typeof o === "object" && o !== null && o.nodeType === 1 && typeof o.nodeName==="string");
 }
 
-function isArray(ray){
+function isArray(ray) {
   return Object.prototype.toString.call(ray) === '[object Array]';
 }
 
@@ -90,10 +90,10 @@ function applyChildrenToElement(el, children) {
     } else if (isString(children)) {
       el.value=children;
       el.innerHTML=children;
-    } else if (isObject(children)){
+    } else if (isObject(children)) {
       var keys = getObjectKeys(children);
       if (!el.kids) el.kids = {}; // named children
-      keys.forEach(function(key){
+      keys.forEach(function(key) {
         var child = isElement(children[key]) ? children[key] : children[key].view;
         if (child) {
           el.appendChild(child);
@@ -150,7 +150,7 @@ function getRecursiveChildren(element, depth) {
   if (depth > 10) return [];
   var kids = getChildren(element);
   var ret = kids;
-  kids.forEach(function(child){
+  kids.forEach(function(child) {
     ret = ret.concat(getRecursiveChildren(child, depth++));
   });
   return ret;
@@ -484,12 +484,16 @@ encodeURIObject = function(obj) {
   return str.join("&");
 }
 
-function formatDate(date){
+function formatDate(date) {
   return  (date.getMonth()+1) +"/" + date.getDate() + "/" + date.getFullYear();
 }
 
-function formatDateTime(date){
-  return  (date.getMonth()+1) +"/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes().toString().length==1?'0':'') + date.getMinutes();
+function formatDateWeek(date) {
+  return  ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()] + " " + (date.getMonth()+1) +"/" + date.getDate() + "/" + date.getFullYear();
+}
+
+function formatDateTime(date) {
+  return  (date.getMonth()+1) +"/" + date.getDate() + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes().toString().length==1?'0':'') + date.getSeconds();
 }
 
 function formatDateSane(date) {
@@ -539,7 +543,7 @@ function setClassState(obj, state) {
 }
 
 function getAutoState(obj) {
-  var keys = getObjectKeys(obj).filter(function(key){
+  var keys = getObjectKeys(obj).filter(function(key) {
     return (isObject(obj[key]) || isElement(obj[key]));
   });
   return getClassState(obj, keys);
@@ -563,7 +567,7 @@ function upperFirst(str) {
 }
 
 function upperAllFirst(str) {
-  return str.split(' ').map(function(st){
+  return str.split(' ').map(function(st) {
     return upperFirst(st);
   }).join(' ');
 }

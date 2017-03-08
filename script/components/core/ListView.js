@@ -10,12 +10,12 @@ var ListView = function(parent, props) {
       spawn(Button, null, { onclick: that.getData }, [spawn(RefreshSvg), spawn('span', null, {}, 'Refresh')]),
       // spawn(Button, null, {}, [spawn(PlusSvg), spawn('span', null, {}, 'Add Item')]),
       that.status = spawn('span', null, {}),
-      spawn('div', null, {}, [
-        that.firstButton = spawn('button', null, { className: 'paginateButton', onclick: that.firstPage }, 'first'),
-        that.lastButton = spawn('button', null, { className: 'paginateButton', onclick: that.lastPage }, 'last'),
+      spawn('div', null, { style: { display: 'flex', height: '100%', alignItems: 'center' } }, [
+        spawn(Button, null, { onclick: that.firstPage }, [spawn(FirstSvg)]),
+        spawn(Button, null, { onclick: that.lastPage, style: { marginLeft: '5px', marginRight: '5px' } }, [spawn(LastSvg)]),
         that.curPage = spawn('span', null, { style: { display: 'inline-block', padding: '5px' } }, ''),
-        that.prevButton = spawn('button', null, { className: 'paginateButton', onclick: that.prevPage }, 'prev page'),
-        that.nextButton = spawn('button', null, { className: 'paginateButton', onclick: that.nextPage }, 'next page'),
+        spawn(Button, null, { onclick: that.prevPage, style: { marginLeft: '5px', marginRight: '5px' } }, [spawn(PrevSvg)]),
+        spawn(Button, null, { onclick: that.nextPage }, [spawn(NextSvg)]),
       ]),
     ]);
   }

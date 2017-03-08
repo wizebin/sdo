@@ -6,7 +6,7 @@ function WorkloadView(parent, props) {
   this.view = spawn('div', parent, { style: { width: '100%', height: '100%' } });
   this.headerView = spawn('div', this.view, { style: { height: '30px', width: '100%', display: 'flex', justifyContent: 'center', margin: '20px' } }, [
     this.backDate = spawn('button', null, { onclick: function(){that.addDays(-1);} }, 'prev day'),
-    this.dateView = spawn('div', null, { style: { margin: '5px' } }, formatDateSane(that.date)),
+    this.dateView = spawn('div', null, { style: { margin: '5px' } }, formatDateWeek(that.date)),
     this.forwardDate = spawn('button', null, { onclick: function(){that.addDays(1);} }, 'next day'),
   ]);
   this.subHeaderView = spawn('div', this.view, { style: { height: '30px', width: '100%', display: 'flex', justifyContent: 'center', margin: '10px' } }, [
@@ -26,7 +26,7 @@ function WorkloadView(parent, props) {
 
 WorkloadView.prototype.addDays = function(quantity) {
   this.date.setDate(this.date.getDate() + quantity);
-  this.dateView.innerHTML = formatDateSane(this.date);
+  this.dateView.innerHTML = formatDateWeek(this.date);
   this.loadData();
 }
 

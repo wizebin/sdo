@@ -374,4 +374,48 @@ function FilterSvg(parent, props) {
   `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
 }
 
+function NextSvg(parent, props) {
+  var that = me(this, props);
+  this.view = spawnFromHtml(`
+    <svg style="max-width: 100%;max-height:100%;" viewBox="13 679 33 62" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <polyline id="Triangle" stroke="currentColor" stroke-width="2" fill="none" transform="translate(29.000000, 710.000000) rotate(90.000000) translate(-29.000000, -710.000000) " points="-1 725 29 695 29 695 59 725"></polyline>
+    </svg>
+  `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
+}
+
+function PrevSvg(parent, props) {
+  var that = me(this, props);
+  this.view = spawnFromHtml(`
+    <svg style="max-width: 100%;max-height:100%;" viewBox="12 679 33 62" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <polyline id="Triangle" stroke="currentColor" stroke-width="2" fill="none" transform="translate(29.000000, 710.000000) scale(-1, 1) rotate(90.000000) translate(-29.000000, -710.000000) " points="-1 725 29 695 29 695 59 725"></polyline>
+    </svg>
+  `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
+}
+
+function FirstSvg(parent, props) {
+  var that = me(this, props);
+  this.view = spawnFromHtml(`
+    <svg style="max-width: 100%;max-height:100%;" viewBox="-63 703 52 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-37.000000, 735.000000) scale(-1, 1) translate(37.000000, -735.000000) translate(-62.000000, 705.000000)">
+        <polyline id="Triangle" stroke="currentColor" stroke-width="2" transform="translate(33.000000, 30.000000) rotate(90.000000) translate(-33.000000, -30.000000) " points="3 45 33 15 33 15 63 45"></polyline>
+        <path d="M0,31 L33,31" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(16.500000, 31.000000) scale(-1, 1) translate(-16.500000, -31.000000) "></path>
+        <path d="M49,18.5 L49,42.5208243" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(49.000000, 30.500000) scale(-1, 1) translate(-49.000000, -30.500000) "></path>
+      </g>
+    </svg>
+  `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
+}
+
+function LastSvg(parent, props) {
+  var that = me(this, props);
+  this.view = spawnFromHtml(`
+    <svg style="max-width: 100%;max-height:100%;" viewBox="-82 703 71 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-81.000000, 705.000000)">
+        <polyline id="Triangle" stroke="currentColor" stroke-width="2" transform="translate(52.000000, 30.000000) rotate(90.000000) translate(-52.000000, -30.000000) " points="22 45 52 15 52 15 82 45"></polyline>
+        <path d="M0,31 L51.5,31" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(26.000000, 31.000000) scale(-1, 1) translate(-26.000000, -31.000000) "></path>
+        <path d="M68,18.5 L68,42.5208243" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(68.000000, 30.500000) scale(-1, 1) translate(-68.000000, -30.500000) "></path>
+      </g>
+    </svg>
+  `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
+}
+
 // http://nonsoftware.us/tools/replacex/#%5B%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%5C%5C%3C!--.*%5C%5Cn%20%20%20%20%22%2C%22replace%22%3A%22%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%20%20%20%20%22%2C%22replace%22%3A%22%20%20%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%5E%22%2C%22replace%22%3A%22%20%20%20%20%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22(%5B%5C%5Cw%5C%5Cd%5C%5Cn%5C%5Cr%5C%5Cv%5C%5Cf%5C%5C.%5C%5Cs%5C%5C%24%5C%5C%5E%5C%5C%7B%5C%5C%5B%5C%5C(%5C%5C%7C%5C%5C)%5C%5C*%5C%5C%2B%5C%5C%3F%5C%5C%5C%5C%5C%5C%3D%5C%5C%3C%5C%5C%3E%5C%5C%5C%22%5C%5C%3A%5C%5C%2F%5C%5C!%5C%5C-%5C%5C%2C%5C%5C%23%5C%5C%25%5D*)%22%2C%22replace%22%3A%22function%20LogoutSvg(parent%2C%20props)%20%7B%5C%5Cn%20%20var%20that%20%3D%20me(this%2C%20props)%3B%5C%5Cn%20%20this.view%20%3D%20spawnFromHtml(%60%5C%5Cn%241%5C%5Cn%20%20%60%2C%20parent%2C%20%7B%20style%3A%20objectAssign(%7B%20maxWidth%3A%20'100%25'%2C%20maxHeight%3A%20'100%25'%20%7D%2C%20this.style)%20%7D)%3B%5C%5Cn%7D%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%7Dfunction(.*%5C%5Cn)%7B5%7D%22%2C%22replace%22%3A%22%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22fill%3D%5C%22%23%5B%5C%5Cw%5C%5Cd%5D%7B6%7D%5C%22%22%2C%22replace%22%3A%22fill%3D%5C%22currentColor%5C%22%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%20height%3D%5C%22%5B%5C%5Cd%2B%5D%2Bpx%5C%22%22%2C%22replace%22%3A%22%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%20width%3D%5C%22%5B%5C%5Cd%2B%5D%2Bpx%5C%22%22%2C%22replace%22%3A%22%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%3Csvg%20%22%2C%22replace%22%3A%22%3Csvg%20style%3D%5C%22max-width%3A%20100%25%3Bmax-height%3A100%25%3B%5C%22%20%22%7D%2C%7B%22type%22%3A%22regex%22%2C%22enabled%22%3Atrue%2C%22find%22%3A%22%24%5C%5Cs%2B%3Cdesc%3ECreated%20with%20Sketch.%3C%2Fdesc%3E%5C%5Cn%5C%5Cs*%3Cdefs%3E%3C%2Fdefs%3E%22%2C%22replace%22%3A%22%22%7D%5D

@@ -78,7 +78,7 @@ var apptLinks = [
 ];
 
 getFilterStringForDate = function(date) {
-  return '' + (date.getMonth()+1) + '/' + date.getDate() + ' ' + ['MON','TUE','WED','THU','FRI','SAT','SUN'][date.getDay()-1];
+  return '' + (date.getMonth()+1) + '/' + date.getDate() + ' ' + ['SUN','MON','TUE','WED','THU','FRI','SAT'][date.getDay()];
 }
 
 function forceStringSize(str, size, padding, before) {
