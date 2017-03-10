@@ -395,11 +395,10 @@ function PrevSvg(parent, props) {
 function FirstSvg(parent, props) {
   var that = me(this, props);
   this.view = spawnFromHtml(`
-    <svg style="max-width: 100%;max-height:100%;" viewBox="-63 703 52 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-37.000000, 735.000000) scale(-1, 1) translate(37.000000, -735.000000) translate(-62.000000, 705.000000)">
-        <polyline id="Triangle" stroke="currentColor" stroke-width="2" transform="translate(33.000000, 30.000000) rotate(90.000000) translate(-33.000000, -30.000000) " points="3 45 33 15 33 15 63 45"></polyline>
-        <path d="M0,31 L33,31" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(16.500000, 31.000000) scale(-1, 1) translate(-16.500000, -31.000000) "></path>
-        <path d="M49,18.5 L49,42.5208243" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(49.000000, 30.500000) scale(-1, 1) translate(-49.000000, -30.500000) "></path>
+    <svg style="max-width: 100%;max-height:100%;" viewBox="-82 703 53 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-80.000000, 705.000000)">
+        <polyline id="Triangle" stroke="currentColor" stroke-width="2" transform="translate(35.000000, 30.000000) scale(-1, 1) rotate(90.000000) translate(-35.000000, -30.000000) " points="5 45 35 15 35 15 65 45"></polyline>
+        <path d="M1.33333333,2 L1.33333333,58" id="Line" stroke="currentColor" stroke-width="4" stroke-linecap="square"></path>
       </g>
     </svg>
   `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
@@ -408,11 +407,10 @@ function FirstSvg(parent, props) {
 function LastSvg(parent, props) {
   var that = me(this, props);
   this.view = spawnFromHtml(`
-    <svg style="max-width: 100%;max-height:100%;" viewBox="-82 703 71 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-      <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-81.000000, 705.000000)">
-        <polyline id="Triangle" stroke="currentColor" stroke-width="2" transform="translate(52.000000, 30.000000) rotate(90.000000) translate(-52.000000, -30.000000) " points="22 45 52 15 52 15 82 45"></polyline>
-        <path d="M0,31 L51.5,31" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(26.000000, 31.000000) scale(-1, 1) translate(-26.000000, -31.000000) "></path>
-        <path d="M68,18.5 L68,42.5208243" id="Line" stroke="currentColor" stroke-width="2" stroke-linecap="square" transform="translate(68.000000, 30.500000) scale(-1, 1) translate(-68.000000, -30.500000) "></path>
+    <svg style="max-width: 100%;max-height:100%;" viewBox="-81 703 53 63" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <g id="Group-4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-80.000000, 705.000000)">
+        <polyline id="Triangle" stroke="currentColor" stroke-width="2" transform="translate(15.000000, 30.000000) rotate(90.000000) translate(-15.000000, -30.000000) " points="-15 45 15 15 15 15 45 45"></polyline>
+        <path d="M48.6666667,2 L48.6666667,58" id="Line" stroke="currentColor" stroke-width="4" stroke-linecap="square"></path>
       </g>
     </svg>
   `, parent, { style: objectAssign({ maxWidth: '100%', maxHeight: '100%' }, this.style) });
