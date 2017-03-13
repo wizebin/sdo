@@ -33,7 +33,8 @@ function getObjectKeys(obj) {
 }
 
 function getEvaluatedString(str) {
-  var escaped = `\`${str.replace('`','\\`')}\``;
+  var exp = new RegExp('`', 'g');
+  var escaped = `\`${str.replace(exp,'\\`')}\``;
   var ret = eval(escaped);
   return ret;
 }
@@ -243,7 +244,7 @@ const httpVERB = (url, verb, params, headers) => {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           const status = xhr.status;
-          if (status === 200) {
+          if (status >= 200 && status <= 300) {
             try {
               resolve(xhr.responseText);
             } catch (err) {
@@ -371,18 +372,23 @@ function getElementScroll(elem) {
   return { x: elem.pageXOffset || elem.scrollLeft, y: elem.pageYOffset || elem.scrollTop };
 }
 
-function getOffsetRect(elem) {
-  var box = elem.getBoundingClientRect()
-  var body = document.body
-  var docElem = document.documentElement
-  var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop
-  var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft
-  var clientTop = docElem.clientTop || body.clientTop || 0
-  var clientLeft = docElem.clientLeft || body.clientLeft || 0
-  var top  = box.top +  scrollTop - clientTop
-  var left = box.left + scrollLeft - clientLeft
+function getElementSize(elem) {
+  var box = elem.getBoundingClientRect();
+  return { w: box.right - box.left, h: box.bottom - box.top };
+}
 
-  return { x: Math.round(left), y: Math.round(top), w: box.right - box.left, h: box.bottom - box.top }
+function getOffsetRect(elem) {
+  var box = elem.getBoundingClientRect();
+  var body = document.body;
+  var docElem = document.documentElement;
+  var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+  var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+  var clientTop = docElem.clientTop || body.clientTop || 0;
+  var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+  var top  = box.top +  scrollTop - clientTop;
+  var left = box.left + scrollLeft - clientLeft;
+
+  return { x: Math.round(left), y: Math.round(top), w: box.right - box.left, h: box.bottom - box.top };
 }
 
 function getPositionInParent(elem) {
@@ -570,4 +576,27 @@ function upperAllFirst(str) {
   return str.split(' ').map(function(st) {
     return upperFirst(st);
   }).join(' ');
+}
+
+function replacex(source, find, replace, flags, originalSource, level) {
+  if (flags === undefined) flags = 'ig';
+  if (level === undefined) level = 0;
+  if (source === originalSource) return source;
+  if (originalSource === undefined) originalSource = source;
+
+  if (isString(source)) {
+    var exp = new RegExp(find, flags);
+    return source.replace(exp, replace);
+  } else if (isArray(source)) {
+    return source.map(function(cur){return replacex(cur, find, replace, flags, originalSource, level+1)});
+  } else if (isObject(source)) {
+    var keys = getObjectKeys(source);
+    return keys.reduce(function(results, cur){
+      results[cur]=replacex(source[cur], find, replace, flags, originalSource, level+1); // leaving the keys alone
+      // results[replacex(cur, find, replace, flags, originalSource, level+1)]=replacex(source[cur], find, replace, flags, originalSource, level+1);
+      return results;
+    }, {});
+  } else {
+    return source;
+  }
 }
